@@ -12,17 +12,31 @@ class FlowRouterMeta
 
 
     @metaHandler = (context, redirect, stop, data) =>
-      existent = []
-      used = []
+      existent   = []
+      used       = []
+      _context   = _.extend context, {query: context.queryParams}
+      _arguments = [context.params, context.queryParams, data]
       $('[data-link-name]').each -> existent.push "link-#{$(@).attr('data-link-name')}"
       $('[data-meta-name]').each -> existent.push "meta-#{$(@).attr('data-meta-name')}"
       $('[data-script-name]').each -> existent.push "script-#{$(@).attr('data-script-name')}"
 
       for type in ['link', 'meta', 'script']
         value = {}
-        value = _.clone @defaults[type] if @defaults?[type]
-        value = _.extend value, _.clone context.route.group.options[type] if context.route?.group?.options?[type]
-        value = _.extend value, _.clone context.route.options[type] if context.route?.options?[type]
+        if @defaults?[type]
+          _def  = @defaults[type]
+          _def  = _def.apply _context, _arguments if _.isFunction _def
+          value = _.clone _def
+
+        if context.route?.group?.options?[type]
+          _crgo = context.route.group.options[type]
+          _crgo = _crgo.apply _context, _arguments if _.isFunction _crgo
+          value = _.extend value, _.clone _crgo
+
+        if context.route?.options?[type]
+          _cro  = context.route.options[type]
+          _cro  = _cro.apply _context, _arguments if _.isFunction _cro
+          value = _.extend value, _.clone _cro
+
         if not _.isEmpty value
           used = _.union used, @traverse type, value, context, data
 
@@ -35,13 +49,17 @@ class FlowRouterMeta
 
     _orig = @router._notfoundRoute
     @router._notfoundRoute = (context) ->
+      _NFRcontext = route: options: {}
       for type in ['link', 'meta', 'script']
-        _context = route: options: {}
-        _context.route.options[type] = _self.router.notFound?[type]
-        if not _.isEmpty _self.router._current
-          _self.metaHandler _.extend _self.router._current, _context
-        else
-          _self.metaHandler _context
+        _NFRcontext.route.options[type] = (_self.router.notFound or _self.router.notfound)?[type]
+      if not _.isEmpty _self.router._current
+        Meteor.setTimeout ->
+          _self.metaHandler _.extend _self.router._current, _.clone _NFRcontext
+        , 2
+      else
+        Meteor.setTimeout ->
+          _self.metaHandler _.clone _NFRcontext
+        , 2
       _orig.apply @, arguments
 
   updateNode: (type, name, values, context, data) ->

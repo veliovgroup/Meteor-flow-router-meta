@@ -2,9 +2,9 @@ Reactive meta tags, JavaScript links and CSS for meteor within flow-router-extra
 ========
 Change meta tags on the fly within [flow-router-extra](https://github.com/VeliovGroup/flow-router). This package can create `meta` tags, `script` and `link` tags as well.
 
-This package may also help to use dynamic CSSs, so you may use different style sheets - for different routes.
+This package may also help to use dynamic CSSs and JSs, so you may use different style sheets - for different routes.
 
-__!!!Important Notice: This package oriented to work with [flow-router-extra](https://github.com/VeliovGroup/flow-router).__ It is extended fork of [kadira:flow-router](https://github.com/kadirahq/flow-router).
+__!!! Important Notice: This package oriented to work with [flow-router-extra](https://github.com/VeliovGroup/flow-router).__ It is extended fork of [kadira:flow-router](https://github.com/kadirahq/flow-router).
 
 This package supports `meta`, `script` and `link` options (properties) defined on methods below, ordered by prioritization:
  - `FlowRouter.route()` [*overrides all*]
