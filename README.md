@@ -21,7 +21,8 @@ meteor add ostrio:flow-router-meta
 
 Demo application:
 ========
-##### [flow-router-meta.meteor.com](http://flow-router-meta.meteor.com)
+ - [Source](https://github.com/VeliovGroup/Meteor-flow-router-meta/tree/master/demo)
+ - [Live](http://flow-router-meta.meteor.com)
 
 Usage:
 ========
