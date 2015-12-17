@@ -19,7 +19,7 @@ template(name='_layout')
         li: a(href="{{pathFor 'groupPage2'}}") Group page 2 (TWBS 4-alpha)
         li: a(href="{{pathFor 'post'}}") Demo post, with data from Mongo
         li: a(href="/nonexistent/route") 404: Non-existent route
-        
+
     .row: .col-md-10
       h3 Defaults:
       +markdown
@@ -223,7 +223,7 @@ template(name='post')
         return BlazeLayout.render('_layout', {
           content: 'post',
           post: post,
-          rand: Random.id
+          rand: Random.id()
         });
       },
       waitOn: function() {

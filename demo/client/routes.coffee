@@ -66,7 +66,7 @@ group.route '/groupPage2',
 FlowRouter.route '/post',
   name: 'post'
   title: (params, query, post) -> post?.title
-  action: (params, query, post) -> BlazeLayout.render '_layout', content: 'post', post: post, rand: Random.id
+  action: (params, query, post) -> BlazeLayout.render '_layout', content: 'post', post: post, rand: Random.id()
   waitOn: -> [Meteor.subscribe('posts')]
   data: -> Collections.posts.findOne()
   whileWaiting: -> BlazeLayout.render '_layout', content: '_loading'
