@@ -1,0 +1,125 @@
+head
+  title Hard-coded title
+
+template(name='_layout')
+  .container-fluid
+    .row
+      .col-md-10
+        h3 ostrio:flow-router-title demo
+        ul
+          li
+            a(href='https://github.com/VeliovGroup/Meteor-flow-router-title') On GitHub
+          li
+            a(href='https://atmospherejs.com/ostrio/flow-router-title') On Atmosphere
+        .alert.alert-info
+          | {{>Template.dynamic template=content}}
+        h5 Pages:
+        ul
+          li
+            a(href="{{pathFor 'index'}}") Index
+          li
+            a(href="{{pathFor 'secondPage'}}") Second Page, title set via Controller (TWBS 2)
+          li
+            a(href="{{pathFor 'thirdPage' something=rand}}") Third Page with parameter "<b>{{rand}}</b>"
+          li
+            a(href="{{pathFor 'groupPage1'}}") Group page
+          li
+            a(href="{{pathFor 'groupPage2'}}") Group page 2
+          li
+            a(href="{{pathFor 'post'}}") Demo post, with data from Mongo
+          li
+            a(href="/nonexistent/route") 404: Non-existent route
+
+template(name='index')
+  p
+    b Index Page
+    | , title should be: "Default Title"
+
+  h5 Code:
+  +markdown
+    ```javascript
+
+    ```
+
+template(name='secondPage')
+  p
+    b Second Page
+    | , title should be: "Second Page Title"
+  p: b This route uses Twitter Bootstrap 2
+
+  h5 Code:
+  +markdown
+    ```javascript
+
+    ```
+
+template(name='thirdPage')
+  p
+    b Third Page
+    | , title should be: "Third Page Title > <b>{{rand}}</b>"
+
+  h5 Code:
+  +markdown
+    ```javascript
+
+    ```
+
+template(name='groupPage1')
+  p
+    b Group Page (no prefix)
+    | , title should be: "GROUP TITLE"
+
+  h5 Code:
+  +markdown
+    ```javascript
+
+    ```
+
+template(name='groupPage2')
+  p
+    b Group Page (with prefix)
+    | , title should be: "Group > Group Page 2"
+
+  h5 Code:
+  +markdown
+    ```javascript
+
+    ```
+
+template(name='post')
+  p
+    b Demo post, data fetched from Mongo
+    | , title should be: "{{post.title}}"
+  h3 {{post.title}}
+  p {{post.text}}
+
+  h5 Code:
+  +markdown
+    ```javascript
+
+    ```
+
+template(name="_loading")
+  center: h4 Loading data from Mongo...
+
+template(name='_404')
+  // response:status-code=404
+  .well(style="text-align:center")
+    h1 404
+    h3 Whoops, page not found
+
+  h5 Code:
+  +markdown
+    ```javascript
+    FlowRouter.notFound = {
+      action: function() {
+        return BlazeLayout.render('_layout', {
+          content: '_404'
+        });
+      },
+      title: '404: Page not found',
+      meta: {
+        description: "Non-existent route"
+      }
+    };
+    ```
