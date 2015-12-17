@@ -3,100 +3,247 @@ head
 
 template(name='_layout')
   .container-fluid
-    .row
-      .col-md-10
-        h3 ostrio:flow-router-title demo
-        ul
-          li
-            a(href='https://github.com/VeliovGroup/Meteor-flow-router-title') On GitHub
-          li
-            a(href='https://atmospherejs.com/ostrio/flow-router-title') On Atmosphere
-        .alert.alert-info
-          | {{>Template.dynamic template=content}}
-        h5 Pages:
-        ul
-          li
-            a(href="{{pathFor 'index'}}") Index
-          li
-            a(href="{{pathFor 'secondPage'}}") Second Page, title set via Controller (TWBS 2)
-          li
-            a(href="{{pathFor 'thirdPage' something=rand}}") Third Page with parameter "<b>{{rand}}</b>"
-          li
-            a(href="{{pathFor 'groupPage1'}}") Group page
-          li
-            a(href="{{pathFor 'groupPage2'}}") Group page 2
-          li
-            a(href="{{pathFor 'post'}}") Demo post, with data from Mongo
-          li
-            a(href="/nonexistent/route") 404: Non-existent route
+    .row: .col-md-10
+      h3 ostrio:flow-router-meta demo
+      ul
+        li: a(href='https://github.com/VeliovGroup/Meteor-flow-router-meta') On GitHub
+        li: a(href='https://atmospherejs.com/ostrio/flow-router-meta') On Atmosphere
+      .well.card: .card-block
+        | {{>Template.dynamic template=content}}
+      h5 Pages:
+      ul
+        li: a(href="{{pathFor 'index'}}") Index
+        li: a(href="{{pathFor 'secondPage'}}") Second Page (TWBS 2 CSS and JS)
+        li: a(href="{{pathFor 'thirdPage' something=rand}}") Third Page with parameter "<b>{{rand}}</b>"
+        li: a(href="{{pathFor 'groupPage1'}}") Group page (TWBS 4-alpha)
+        li: a(href="{{pathFor 'groupPage2'}}") Group page 2 (TWBS 4-alpha)
+        li: a(href="{{pathFor 'post'}}") Demo post, with data from Mongo
+        li: a(href="/nonexistent/route") 404: Non-existent route
+        
+    .row: .col-md-10
+      h3 Defaults:
+      +markdown
+        ```javascript
+        FlowRouter.globals.push({
+          title: 'Default title'
+        });
+
+        FlowRouter.globals.push({
+          link: {
+            twbs: {
+              rel: 'stylesheet',
+              href: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'
+            },
+            canonical: {
+              rel: 'canonical',
+              itemprop: 'url',
+              href: function() {
+                return Meteor.absoluteUrl((FlowRouter.current().path || document.location.pathname).replace(/^\//g, ''));
+              }
+            }
+          }
+        });
+
+        FlowRouter.globals.push({
+          script: {
+            twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js'
+          }
+        });
+
+        FlowRouter.globals.push({
+          meta: {
+            description: 'Default Demo FlowRouterMeta description'
+          }
+        });
+        ```
 
 template(name='index')
-  p
-    b Index Page
-    | , title should be: "Default Title"
-
-  h5 Code:
   +markdown
-    ```javascript
+    __Index Page__, title should be: "Default Title"
 
+    ##### Code:
+    ```javascript
+    FlowRouter.route('/', {
+      name: 'index',
+      action: function() {
+        return BlazeLayout.render('_layout', {
+          content: 'index',
+          rand: Random.id()
+        });
+      }
+    });
     ```
 
 template(name='secondPage')
-  p
-    b Second Page
-    | , title should be: "Second Page Title"
-  p: b This route uses Twitter Bootstrap 2
-
-  h5 Code:
   +markdown
-    ```javascript
+    __Second Page__, title should be: "Second Page Title"
 
+    __This route uses Twitter Bootstrap 2__
+
+    ##### Code:
+    ```javascript
+    FlowRouter.route('/secondPage', {
+      name: 'secondPage',
+      title: 'Second Page title',
+      meta: {
+        description: 'Second Page description'
+      },
+      link: {
+        twbs: {
+          rel: 'stylesheet',
+          href: 'https://maxcdn.bootstrapcdn.com/bootstrap/2.2.0/css/bootstrap.min.css'
+        }
+      },
+      script: {
+        twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/2.2.0/js/bootstrap.min.js'
+      },
+      action: function() {
+        return BlazeLayout.render('_layout', {
+          content: 'secondPage',
+          rand: Random.id()
+        });
+      }
+    });
     ```
 
 template(name='thirdPage')
-  p
-    b Third Page
-    | , title should be: "Third Page Title > <b>{{rand}}</b>"
-
-  h5 Code:
   +markdown
-    ```javascript
+    __Third Page__, title should be: "Third Page Title > <b>{{rand}}</b>"
 
+    ##### Code:
+    ```javascript
+    FlowRouter.route('/thirdPage/:something', {
+      name: 'thirdPage',
+      title: function(params) {
+        return "Third Page Title > " + params.something;
+      },
+      action: function(params) {
+        return BlazeLayout.render('_layout', {
+          content: 'thirdPage',
+          rand: params.something
+        });
+      }
+    });
     ```
 
 template(name='groupPage1')
-  p
-    b Group Page (no prefix)
-    | , title should be: "GROUP TITLE"
-
-  h5 Code:
   +markdown
-    ```javascript
+    __Group Page__, title should be: "GROUP TITLE"
 
+    __This route uses Twitter Bootstrap 4-alpha__
+
+    ##### Code:
+    ```javascript
+    var group = FlowRouter.group({
+      prefix: '/group',
+      title: 'GROUP TITLE',
+      titlePrefix: 'Group > ',
+      link: {
+        twbs: {
+          rel: 'stylesheet',
+          href: 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css'
+        }
+      },
+      script: {
+        twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js'
+      },
+      meta: {
+        description: 'Group description'
+      }
+    });
+
+    group.route('/groupPage1', {
+      name: 'groupPage1',
+      action: function(params, query) {
+        return BlazeLayout.render('_layout', {
+          content: 'groupPage1',
+          rand: Random.id()
+        });
+      }
+    });
     ```
 
 template(name='groupPage2')
-  p
-    b Group Page (with prefix)
-    | , title should be: "Group > Group Page 2"
-
-  h5 Code:
   +markdown
-    ```javascript
+    __Group Page 2__, title should be: "Group > Group Page 2"
 
+    __This route uses Twitter Bootstrap 4-alpha__
+
+    ##### Code:
+    ```javascript
+    var group = FlowRouter.group({
+      prefix: '/group',
+      title: 'GROUP TITLE',
+      titlePrefix: 'Group > ',
+      link: {
+        twbs: {
+          rel: 'stylesheet',
+          href: 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css'
+        }
+      },
+      script: {
+        twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js'
+      },
+      meta: {
+        description: 'Group description'
+      }
+    });
+
+    group.route('/groupPage2', {
+      name: 'groupPage2',
+      title: 'Group page 2',
+      action: function(params, query) {
+        return BlazeLayout.render('_layout', {
+          content: 'groupPage2',
+          rand: Random.id()
+        });
+      },
+      meta: {
+        description: 'Overridden group description by group member route'
+      }
+    });
     ```
 
 template(name='post')
-  p
-    b Demo post, data fetched from Mongo
-    | , title should be: "{{post.title}}"
-  h3 {{post.title}}
-  p {{post.text}}
-
-  h5 Code:
   +markdown
-    ```javascript
+    __Demo post, data fetched from Mongo__, title should be: "{{post.title}}"
 
+    ### {{post.title}}
+
+    {{post.text}}
+
+    ##### Code:
+    ```javascript
+    FlowRouter.route('/post', {
+      name: 'post',
+      title: function(params, query, post) {
+        return post.title;
+      },
+      action: function(params, query, post) {
+        return BlazeLayout.render('_layout', {
+          content: 'post',
+          post: post,
+          rand: Random.id
+        });
+      },
+      waitOn: function() {
+        return [Meteor.subscribe('posts')];
+      },
+      data: function() {
+        return Collections.posts.findOne();
+      },
+      whileWaiting: function() {
+        return BlazeLayout.render('_layout', {
+          content: '_loading'
+        });
+      },
+      meta: function(params, query, post) {
+        return {
+          keywords: post.keywords,
+          description: post.description
+        };
+      }
+    });
     ```
 
 template(name="_loading")
@@ -104,21 +251,23 @@ template(name="_loading")
 
 template(name='_404')
   // response:status-code=404
-  .well(style="text-align:center")
+  .alert.alert-danger(style="text-align:center")
     h1 404
     h3 Whoops, page not found
 
-  h5 Code:
   +markdown
+    ##### Code:
     ```javascript
     FlowRouter.notFound = {
       action: function() {
         return BlazeLayout.render('_layout', {
-          content: '_404'
+          content: '_404',
+          rand: Random.id()
         });
       },
       title: '404: Page not found',
       meta: {
+        robots: 'noindex, nofollow',
         description: "Non-existent route"
       }
     };

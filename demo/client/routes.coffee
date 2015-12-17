@@ -12,21 +12,24 @@ FlowRouter.globals.push
 FlowRouter.globals.push
   script: twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js'
 
-FlowRouter.notFound = 
-  action: -> BlazeLayout.render '_layout', content: '_404'
-  title: '404: Page not found'
-  meta: description: "Non-existent route"
+FlowRouter.globals.push
+  meta: description: 'Default Demo FlowRouterMeta description'
 
-FlowRouter.route '/'
-,
+FlowRouter.notFound = 
+  action: -> BlazeLayout.render '_layout', content: '_404', rand: Random.id()
+  title: '404: Page not found'
+  meta: 
+    robots: 'noindex, nofollow'
+    description: 'Non-existent route'
+
+FlowRouter.route '/',
   name: 'index'
   action: -> BlazeLayout.render '_layout', content: 'index', rand: Random.id()
 
-FlowRouter.route '/secondPage'
-,
+FlowRouter.route '/secondPage',
   name: 'secondPage'
   title: 'Second Page title'
-  meta: description: "Second Page description"
+  meta: description: 'Second Page description'
   link:
     twbs: 
       rel: 'stylesheet'
@@ -34,32 +37,31 @@ FlowRouter.route '/secondPage'
   script: twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/2.2.0/js/bootstrap.min.js'
   action: -> BlazeLayout.render '_layout', content: 'secondPage', rand: Random.id()
 
-FlowRouter.route '/thirdPage/:something'
-,
+FlowRouter.route '/thirdPage/:something',
   name: 'thirdPage'
-  title: -> "Third Page Title > #{@params.something}"
-  action: (params, query) -> BlazeLayout.render '_layout', content: 'thirdPage', rand: params.something
+  title: (params) -> "Third Page Title > #{params.something}"
+  action: (params) -> BlazeLayout.render '_layout', content: 'thirdPage', rand: params.something
 
 group = FlowRouter.group 
   prefix: '/group'
-  title: "GROUP TITLE"
+  title: 'GROUP TITLE'
   titlePrefix: 'Group > '
   link:
     twbs:
       rel: 'stylesheet'
-      href: "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css"
+      href: 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css'
   script: twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js'
+  meta: description: 'Group description'
 
-group.route '/groupPage1/'
-,
+group.route '/groupPage1',
   name: 'groupPage1'
   action: (params, query) -> BlazeLayout.render '_layout', content: 'groupPage1', rand: Random.id()
 
-group.route '/groupPage2/'
-,
+group.route '/groupPage2',
   name: 'groupPage2'
   title: 'Group page 2'
   action: (params, query) -> BlazeLayout.render '_layout', content: 'groupPage2', rand: Random.id()
+  meta: description: 'Overridden group description by group member route'
 
 FlowRouter.route '/post',
   name: 'post'
