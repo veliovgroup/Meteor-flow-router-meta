@@ -5,9 +5,6 @@ template(name='_layout')
   .container-fluid
     .row: .col-md-10
       h3 ostrio:flow-router-meta demo
-      ul
-        li: a(href='https://github.com/VeliovGroup/Meteor-flow-router-meta') On GitHub
-        li: a(href='https://atmospherejs.com/ostrio/flow-router-meta') On Atmosphere
       .well.card: .card-block
         | {{>Template.dynamic template=content}}
       h5 Pages:
@@ -56,6 +53,19 @@ template(name='_layout')
           }
         });
         ```
+
+  hr
+
+  center
+    h6
+      | Get this package 
+      a(href='https://github.com/VeliovGroup/Meteor-flow-router-meta') on GitHub
+      |  and/or 
+      a(href='https://atmospherejs.com/ostrio/flow-router-meta') on Atmosphere
+      | .
+    h6
+      | 2016. By 
+      a(href='https://veliovgroup.com') Veliov Group, LLC
 
 template(name='index')
   +markdown
@@ -145,7 +155,12 @@ template(name='groupPage1')
         }
       },
       script: {
-        twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js'
+        twbs: {
+          src: 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js',
+          type: 'text/javascript',
+          defer: true,
+          async: true
+        }
       },
       meta: {
         description: 'Group description'
@@ -182,7 +197,12 @@ template(name='groupPage2')
         }
       },
       script: {
-        twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js'
+        twbs: {
+          src: 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js',
+          type: 'text/javascript',
+          defer: true,
+          async: true
+        }
       },
       meta: {
         description: 'Group description'

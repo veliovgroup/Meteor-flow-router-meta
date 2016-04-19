@@ -1,5 +1,5 @@
 FlowRouter.globals.push title: 'Default title'
-FlowRouter.globals.push 
+FlowRouter.globals.push
   link:
     twbs: 
       rel: 'stylesheet'
@@ -13,7 +13,11 @@ FlowRouter.globals.push
   script: twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js'
 
 FlowRouter.globals.push
-  meta: description: 'Default Demo FlowRouterMeta description'
+  meta: 
+    description:
+      name:     'description'
+      content:  'Default Demo FlowRouterMeta description'
+      property: 'og:description'
 
 FlowRouter.notFound = 
   action: -> BlazeLayout.render '_layout', content: '_404', rand: Random.id()
@@ -50,7 +54,12 @@ group = FlowRouter.group
     twbs:
       rel: 'stylesheet'
       href: 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/css/bootstrap.min.css'
-  script: twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js'
+  script: 
+    twbs: 
+      src: 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha/js/bootstrap.min.js'
+      type: 'text/javascript'
+      defer: true
+      async: true
   meta: description: 'Group description'
 
 group.route '/groupPage1',
