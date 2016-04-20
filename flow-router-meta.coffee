@@ -6,21 +6,23 @@ class FlowRouterMeta
     if @router.globals.length
       for option in @router.globals
         if _.isObject option
-          @setDefaults 'meta', option.meta     if _.has option, 'meta'
-          @setDefaults 'link', option.link     if _.has option, 'link'
+          @setDefaults 'meta',   option.meta   if _.has option, 'meta'
+          @setDefaults 'link',   option.link   if _.has option, 'link'
           @setDefaults 'script', option.script if _.has option, 'script'
 
-
     @metaHandler = (context, redirect, stop, data) =>
-      existent   = []
-      used       = []
+      head       = document.getElementsByTagName('head')?[0]
       _context   = _.extend context, {query: context.queryParams}
       _arguments = [context.params, context.queryParams, data]
-      $('[data-link-name]').each -> existent.push "link-#{$(@).attr('data-link-name')}"
-      $('[data-meta-name]').each -> existent.push "meta-#{$(@).attr('data-meta-name')}"
-      $('[data-script-name]').each -> existent.push "script-#{$(@).attr('data-script-name')}"
 
       for type in ['link', 'meta', 'script']
+        existent = []
+        used     = []
+        if head
+          _oldElements = head.querySelectorAll "#{type}[data-name]"
+          if _oldElements.length
+            _.each _oldElements, (element) -> existent.push element.dataset.name
+
         value = {}
         if @defaults?[type]
           _def  = @defaults[type]
@@ -37,13 +39,13 @@ class FlowRouterMeta
           _cro  = _cro.apply _context, _arguments if _.isFunction _cro
           value = _.extend value, _.clone _cro
 
-        if not _.isEmpty value
-          used = _.union used, @traverse type, value, context, data
+        unless _.isEmpty value
+          used = @traverse type, value, context, data
 
-      toRemove = _.difference existent, used
-      for attr in toRemove
-        _attr = attr.split '-'
-        $(_attr[0] + '[data-' + _attr[0] + '-name="' + _attr[1] + '"]').remove()
+        if used.length and existent.length
+          for name in _.difference existent, used
+            _element = head.querySelector "#{type}[data-name=\"#{name}\"]"
+            head.removeChild(_element) if _element
     
     @router.triggers.enter [@metaHandler]
 
@@ -63,43 +65,50 @@ class FlowRouterMeta
       _orig.apply @, arguments
 
   updateNode: (type, name, values, context, data) ->
-    change      = false
-    currentNode = false
-    _context    = _.extend context, {query: context.queryParams}
-    _arguments  = [context.params, context.queryParams, data]
-
-    if $('head').has(type + '[data-' + type + '-name="' + name + '"]')[0]
-      currentNode = $ type + '[data-' + type + '-name="' + name + '"]'
-
-    if currentNode
-      for attrName, content of values
-        content = content.apply _context, _arguments if _.isFunction content
-
-        if currentNode.attr(attrName) isnt content
+    head = document.getElementsByTagName('head')?[0]
+    if head
+      _context    = _.extend context, {query: context.queryParams}
+      _arguments  = [context.params, context.queryParams, data]
+      currentNode = head.querySelector(type + '[data-name="' + name + '"]')
+      if currentNode
+        usedAttrs   = ['data-name']
+        oldAttrs    = []
+        _attributes = currentNode.attributes
+        if _attributes.length
+          i = _attributes.length
+          while i-- > 0
+            oldAttrs.push _attributes[i].name
+        
+        for attrName, content of values
+          content = content.apply _context, _arguments if _.isFunction content
           if content
-            currentNode.attr attrName, content 
-          else
-            currentNode.removeAttr attrName 
-    else
-      element = $ '<' + type + ' data-' + type + '-name="' + name + '">'
-      for attrName, content of values
-        content = content.apply _context, _arguments if _.isFunction content
-        element.attr attrName, content if content
-      $('head').prepend element
+            usedAttrs.push attrName
+            if content isnt currentNode.getAttribute attrName
+              currentNode.setAttribute attrName, content
+
+        if usedAttrs.length and oldAttrs.length
+          for attrName in _.difference oldAttrs, usedAttrs
+            currentNode.removeAttribute attrName
+      else
+        element = document.createElement type
+        element.dataset['name'] = name
+        for attrName, content of values
+          content = content.apply _context, _arguments if _.isFunction content
+          element.setAttribute(attrName, content) if content
+        head.appendChild element
 
   traverse: (type, settings, context, data) ->
     used       = []
     _context   = _.extend context, {query: context.queryParams}
     _arguments = [context.params, context.queryParams, data]
     settings   = settings.apply _context, _arguments if _.isFunction settings
-
     for name, values of settings
       values = values.apply _context, _arguments if _.isFunction values
       if _.isString values
         values = {content: values, name: name} if type is 'meta'
         values = {href: values, rel: name} if type is 'link'
         values = {src: values} if type is 'script'
-      used.push "#{type}-#{name}"
+      used.push name
       @updateNode type, name, values, context, data
     return used
 

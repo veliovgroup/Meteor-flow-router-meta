@@ -17,7 +17,7 @@ ToC:
 ========
  - [Installation](https://github.com/VeliovGroup/Meteor-flow-router-meta#install)
  - [Demo application](https://github.com/VeliovGroup/Meteor-flow-router-meta#demo-application)
- - [Set CSS and JS per route](https://github.com/VeliovGroup/Meteor-flow-router-meta#change-css-and-js-per-route)
+ - [Set CSS and JS per route](https://github.com/VeliovGroup/Meteor-flow-router-meta#set-css-and-js-per-route)
  - [Use function as value](https://github.com/VeliovGroup/Meteor-flow-router-meta#use-function-as-value)
  - [Use function's context](https://github.com/VeliovGroup/Meteor-flow-router-meta#use-function-context)
  - [Bootstrap configuration](https://github.com/VeliovGroup/Meteor-flow-router-meta#bootstrap-configuration)
@@ -190,10 +190,9 @@ FlowRouter.route('/routePath', {
   meta: {
     uniqueName: {
       name: 'name',
-      content: 'content',
-      value: 'value',
-      'og:prop': 'value',
-      itemprop: 'value'
+      content: 'value',
+      property: 'og:name',
+      itemprop: 'name'
     }
   }
 });
