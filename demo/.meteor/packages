@@ -18,11 +18,12 @@ appcache
 templating
 coffeescript
 mquandalle:jade
-ostrio:flow-router-extra
-ostrio:flow-router-meta
 arillo:flow-router-helpers
 kadira:blaze-layout
 chuangbo:marked
 simple:highlight.js
 standard-minifier-css
 standard-minifier-js
+ostrio:flow-router-extra
+ostrio:flow-router-title
+ostrio:flow-router-meta
