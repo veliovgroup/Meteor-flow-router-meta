@@ -67,9 +67,7 @@ FlowRouter.globals.push({
 FlowRouter.route('/secondPage', {
   name: 'secondPage',
   action: function(params, query) {
-    return BlazeLayout.render('layout', {
-      content: 'secondPage'
-    });
+    return this.render('layout', 'secondPage');
   },
   link: {
     twbs: {
@@ -98,9 +96,7 @@ var group = FlowRouter.group({
 group.route('/groupPage1', {
   name: 'groupPage1',
   action: function(params, query) {
-    return BlazeLayout.render('layout', {
-      content: 'groupPage1'
-    });
+    return this.render('layout', 'groupPage1');
   }
 });
 ```
