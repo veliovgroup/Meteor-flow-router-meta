@@ -19,7 +19,6 @@ templating
 coffeescript
 mquandalle:jade
 arillo:flow-router-helpers
-kadira:blaze-layout
 chuangbo:marked
 simple:highlight.js
 standard-minifier-css

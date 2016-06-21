@@ -6,7 +6,7 @@ template(name='_layout')
     .row: .col-md-10
       h3 ostrio:flow-router-meta demo
       .well.card: .card-block
-        | {{>Template.dynamic template=content}}
+        +yield
       h5 Pages:
       ul
         li: a(href="{{pathFor 'index'}}") Index
@@ -76,8 +76,7 @@ template(name='index')
     FlowRouter.route('/', {
       name: 'index',
       action: function() {
-        return BlazeLayout.render('_layout', {
-          content: 'index',
+        this.render('_layout', 'index', {
           rand: Random.id()
         });
       }
@@ -108,8 +107,7 @@ template(name='secondPage')
         twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/2.2.0/js/bootstrap.min.js'
       },
       action: function() {
-        return BlazeLayout.render('_layout', {
-          content: 'secondPage',
+        this.render('_layout', 'secondPage', {
           rand: Random.id()
         });
       }
@@ -128,8 +126,7 @@ template(name='thirdPage')
         return "Third Page Title > " + params.something;
       },
       action: function(params) {
-        return BlazeLayout.render('_layout', {
-          content: 'thirdPage',
+        this.render('_layout', 'thirdPage', {
           rand: params.something
         });
       }
@@ -170,8 +167,7 @@ template(name='groupPage1')
     group.route('/groupPage1', {
       name: 'groupPage1',
       action: function(params, query) {
-        return BlazeLayout.render('_layout', {
-          content: 'groupPage1',
+        this.render('_layout', 'groupPage1', {
           rand: Random.id()
         });
       }
@@ -213,8 +209,7 @@ template(name='groupPage2')
       name: 'groupPage2',
       title: 'Group page 2',
       action: function(params, query) {
-        return BlazeLayout.render('_layout', {
-          content: 'groupPage2',
+        this.render('_layout', 'groupPage2', {
           rand: Random.id()
         });
       },
@@ -240,8 +235,7 @@ template(name='post')
         return post.title;
       },
       action: function(params, query, post) {
-        return BlazeLayout.render('_layout', {
-          content: 'post',
+        this.render('_layout', 'post', {
           post: post,
           rand: Random.id()
         });
@@ -253,9 +247,7 @@ template(name='post')
         return Collections.posts.findOne();
       },
       whileWaiting: function() {
-        return BlazeLayout.render('_layout', {
-          content: '_loading'
-        });
+        this.render('_layout', '_loading');
       },
       meta: function(params, query, post) {
         return {
@@ -280,8 +272,7 @@ template(name='_404')
     ```javascript
     FlowRouter.notFound = {
       action: function() {
-        return BlazeLayout.render('_layout', {
-          content: '_404',
+        this.render('_layout', '_404', {
           rand: Random.id()
         });
       },

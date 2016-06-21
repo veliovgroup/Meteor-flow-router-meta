@@ -20,7 +20,9 @@ FlowRouter.globals.push
       property: 'og:description'
 
 FlowRouter.notFound = 
-  action: -> BlazeLayout.render '_layout', content: '_404', rand: Random.id()
+  action: ->
+    @render '_layout', '_404', rand: Random.id()
+    return
   title: '404: Page not found'
   meta: 
     robots: 'noindex, nofollow'
@@ -28,7 +30,9 @@ FlowRouter.notFound =
 
 FlowRouter.route '/',
   name: 'index'
-  action: -> BlazeLayout.render '_layout', content: 'index', rand: Random.id()
+  action: ->
+    @render '_layout', 'index', rand: Random.id()
+    return
 
 FlowRouter.route '/secondPage',
   name: 'secondPage'
@@ -39,12 +43,16 @@ FlowRouter.route '/secondPage',
       rel: 'stylesheet'
       href: 'https://maxcdn.bootstrapcdn.com/bootstrap/2.2.0/css/bootstrap.min.css'
   script: twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/2.2.0/js/bootstrap.min.js'
-  action: -> BlazeLayout.render '_layout', content: 'secondPage', rand: Random.id()
+  action: ->
+    @render '_layout', 'secondPage', rand: Random.id()
+    return
 
 FlowRouter.route '/thirdPage/:something',
   name: 'thirdPage'
   title: (params) -> "Third Page Title > #{params.something}"
-  action: (params) -> BlazeLayout.render '_layout', content: 'thirdPage', rand: params.something
+  action: (params) ->
+    @render '_layout', 'thirdPage', rand: params.something
+    return
 
 group = FlowRouter.group 
   prefix: '/group'
@@ -64,21 +72,29 @@ group = FlowRouter.group
 
 group.route '/groupPage1',
   name: 'groupPage1'
-  action: (params, query) -> BlazeLayout.render '_layout', content: 'groupPage1', rand: Random.id()
+  action: (params, query) ->
+    @render '_layout', 'groupPage1', rand: Random.id()
+    return
 
 group.route '/groupPage2',
   name: 'groupPage2'
   title: 'Group page 2'
-  action: (params, query) -> BlazeLayout.render '_layout', content: 'groupPage2', rand: Random.id()
+  action: (params, query) ->
+    @render '_layout', 'groupPage2', rand: Random.id()
+    return
   meta: description: 'Overridden group description by group member route'
 
 FlowRouter.route '/post',
   name: 'post'
   title: (params, query, post) -> post?.title
-  action: (params, query, post) -> BlazeLayout.render '_layout', content: 'post', post: post, rand: Random.id()
+  action: (params, query, post) ->
+    @render '_layout', 'post', post: post, rand: Random.id()
+    return
   waitOn: -> [Meteor.subscribe('posts')]
   data: -> Collections.posts.findOne()
-  whileWaiting: -> BlazeLayout.render '_layout', content: '_loading'
+  whileWaiting: ->
+    @render '_layout', '_loading'
+    return
   meta: (params, query, post) ->
     keywords: post?.keywords
     description: post?.description
