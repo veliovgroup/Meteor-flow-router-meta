@@ -113,3 +113,5 @@ class FlowRouterMeta
     return used
 
   setDefaults: (type, settings) -> @defaults[type] = settings
+
+`export { FlowRouterMeta }`

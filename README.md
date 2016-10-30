@@ -34,6 +34,12 @@ Demo application:
  - [Source](https://github.com/VeliovGroup/Meteor-flow-router-meta/tree/master/demo)
  - ~~Live: http://flow-router-meta.meteor.com~~ (*We are looking for free hosting for this demo*)
 
+ES6 Import:
+========
+```jsx
+import { FlowRouterMeta } from 'meteor/ostrio:flow-router-meta';
+```
+
 Usage:
 ========
 You need to initialize `FlowRouterMeta` and `FlowRouterTitle` classes by passing `FlowRouter` object. Right after creating all your routes:

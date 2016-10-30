@@ -4,25 +4,26 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
-meteor-base             # Packages every Meteor app needs to have
-mobile-experience       # Packages for a great mobile UX
+meteor-base@1.0.4             # Packages every Meteor app needs to have
+mobile-experience@1.0.4       # Packages for a great mobile UX
 blaze-html-templates    # Compile .html files into Meteor Blaze views
-jquery                  # Helpful client-side library
-tracker                 # Meteor's client-side reactive programming library
+jquery@1.11.10                  # Helpful client-side library
+tracker@1.1.1                 # Meteor's client-side reactive programming library
 
-es5-shim                # ECMAScript 5 compatibility for older browsers.
-ecmascript              # Enable ECMAScript2015+ syntax in app code
+es5-shim@4.6.15                # ECMAScript 5 compatibility for older browsers.
+ecmascript@0.5.9              # Enable ECMAScript2015+ syntax in app code
 
-random
-appcache
+random@1.0.10
+appcache@1.0.12
 templating
-coffeescript
+coffeescript@1.11.1_2
 mquandalle:jade
 arillo:flow-router-helpers
 chuangbo:marked
 simple:highlight.js
-standard-minifier-css
-standard-minifier-js
+standard-minifier-css@1.3.2
+standard-minifier-js@1.2.1
 ostrio:flow-router-extra
 ostrio:flow-router-title
 ostrio:flow-router-meta
+shell-server
