@@ -1,0 +1,23 @@
+{
+  "name": "flow-router-meta-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "babel-runtime": "^6.20.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VeliovGroup/Meteor-flow-router-meta.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VeliovGroup/Meteor-flow-router-meta/issues"
+  },
+  "homepage": "https://github.com/VeliovGroup/Meteor-flow-router-meta#readme"
+}
