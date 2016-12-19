@@ -38,6 +38,8 @@ ES6 Import:
 ========
 ```jsx
 import { FlowRouterMeta } from 'meteor/ostrio:flow-router-meta';
+// This library implies ostrio:flow-router-title package, and both can be imported in single line:
+import { FlowRouterMeta, FlowRouterTitle } from 'meteor/ostrio:flow-router-meta';
 ```
 
 Usage:
@@ -83,6 +85,20 @@ FlowRouter.route('/secondPage', {
   },
   script: {
     twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/2.2.0/js/bootstrap.min.js'
+  }
+});
+
+// Unset defaults, via controller:
+FlowRouter.route('/secondPage', {
+  name: 'secondPage',
+  action: function(params, query) {
+    return this.render('layout', 'secondPage');
+  },
+  link: {
+    twbs: null
+  },
+  script: {
+    twbs: null
   }
 });
 
