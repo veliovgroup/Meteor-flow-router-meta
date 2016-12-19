@@ -29,10 +29,10 @@ Install:
 meteor add ostrio:flow-router-meta
 ```
 
-Demo application:
+Demos / Tests:
 ========
  - [Source](https://github.com/VeliovGroup/Meteor-flow-router-meta/tree/master/demo)
- - ~~Live: http://flow-router-meta.meteor.com~~ (*We are looking for free hosting for this demo*)
+ - [Tests](https://github.com/VeliovGroup/Meteor-flow-router-meta/tree/master/tests.js)
 
 ES6 Import:
 ========
