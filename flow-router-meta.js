@@ -1,4 +1,3 @@
-/* jshint esversion:6 */
 export { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';
 
 export class FlowRouterMeta {
@@ -9,7 +8,7 @@ export class FlowRouterMeta {
     this.tags = ['link', 'meta', 'script'];
 
     const _orig = this.router._notfoundRoute;
-    this.router._notfoundRoute = function(context) {
+    this.router._notfoundRoute = function() {
       let _context = {
         route: {
           options: {}
@@ -32,10 +31,7 @@ export class FlowRouterMeta {
     };
   }
 
-  _fromParent(group, type, _context, _arguments, result) {
-    if (!result) {
-      result = {};
-    }
+  _fromParent(group, type, _context, _arguments, result = {}) {
     if (group) {
       if (group.options && _.has(group.options, type)) {
         result = _.extend(this._getValue(group.options[type], _context, _arguments), result);
@@ -48,7 +44,7 @@ export class FlowRouterMeta {
     return result;
   }
 
-  _getValue(prop, _context, _arguments, key) {
+  _getValue(prop, _context, _arguments) {
     let result = {};
     if (_.isFunction(prop)) {
       result = this._getValue(prop.apply(_context, _arguments), _context, _arguments);
@@ -108,7 +104,7 @@ export class FlowRouterMeta {
 
       for (let key in elements[this.tags[k]]) {
         let element = head.querySelectorAll(`${this.tags[k]}[data-name="${key}"]`)[0];
-        let stop    = false;
+        let _stop    = false;
         if (!element) {
           element = document.createElement(this.tags[k]);
           head.appendChild(element);
@@ -116,48 +112,50 @@ export class FlowRouterMeta {
 
         if (_.isEmpty(elements[this.tags[k]][key]) || _.isNull(elements[this.tags[k]][key])) {
           head.removeChild(element);
-          stop = true;
+          _stop = true;
         }
 
-        if (!stop) {
+        if (!_stop) {
           element.dataset.name = key;
           let attributes = elements[this.tags[k]][key];
           if (_.isString(attributes)) {
             switch (this.tags[k]) {
-              case 'meta':
-                attributes = {
-                  content: attributes,
-                  name: key
-                };
-                break;
-              case 'link':
-                attributes = {
-                  href: attributes,
-                  rel: key
-                };
-                break;
-              case 'script':
-                attributes = {
-                  src: attributes
-                };
-                break;
-              default:
-                attributes = void 0;
-                break;
+            case 'meta':
+              attributes = {
+                content: attributes,
+                name: key
+              };
+              break;
+            case 'link':
+              attributes = {
+                href: attributes,
+                rel: key
+              };
+              break;
+            case 'script':
+              attributes = {
+                src: attributes
+              };
+              break;
+            default:
+              attributes = void 0;
+              break;
             }
           } else if (_.isObject(attributes)) {
             let defaultAttrs = {};
             switch (this.tags[k]) {
-              case 'meta':
-                defaultAttrs = {
-                  name: key
-                };
-                break;
-              case 'link':
-                defaultAttrs = {
-                  rel: key
-                };
-                break;
+            case 'meta':
+              defaultAttrs = {
+                name: key
+              };
+              break;
+            case 'link':
+              defaultAttrs = {
+                rel: key
+              };
+              break;
+            default:
+              break;
             }
 
             attributes = _.extend(defaultAttrs, attributes);
