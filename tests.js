@@ -1,4 +1,3 @@
-/* jshint esversion:6 */
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 if (Meteor.isServer) {
@@ -18,7 +17,7 @@ FlowRouter.globals.push({
     canonical: {
       rel: 'canonical',
       itemprop: 'url',
-      href: function() {
+      href() {
         return Meteor.absoluteUrl((FlowRouter.current().path || document.location.pathname).replace(/^\//g, ''));
       }
     }
@@ -38,7 +37,7 @@ FlowRouter.globals.push({
 });
 
 FlowRouter.notFound = {
-  action: function() {},
+  action() {},
   title: '404: Page not found',
   meta: {
     robots: 'noindex, nofollow',
@@ -46,7 +45,7 @@ FlowRouter.notFound = {
   },
   link: {
     twbs: null,
-    canonical: function() {
+    canonical() {
       return Meteor.absoluteUrl((FlowRouter.current().path || document.location.pathname).replace(/^\//g, ''));
     }
   }
@@ -54,7 +53,7 @@ FlowRouter.notFound = {
 
 FlowRouter.route('/', {
   name: 'index',
-  action: function() {}
+  action() {}
 });
 
 FlowRouter.route('/secondPage', {
@@ -64,7 +63,7 @@ FlowRouter.route('/secondPage', {
     robots: 'index, follow',
     description: 'Second Page description'
   },
-  link:{
+  link: {
     twbs: {
       rel: 'stylesheet',
       href: 'https://maxcdn.bootstrapcdn.com/bootstrap/2.2.0/css/bootstrap.min.css'
@@ -73,7 +72,7 @@ FlowRouter.route('/secondPage', {
   script: {
     twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/2.2.0/js/bootstrap.min.js'
   },
-  action: function() {}
+  action() {}
 });
 
 FlowRouter.route('/unset', {
@@ -83,41 +82,41 @@ FlowRouter.route('/unset', {
     robots: null,
     description: null
   },
-  link:{
+  link: {
     twbs: null
   },
   script: {
     twbs: null
   },
-  action: function() {}
+  action() {}
 });
 
 FlowRouter.route('/thirdPage/:something', {
   name: 'thirdPage',
-  title: function() {
-    return "Third Page Title > " + this.params.something;
+  title() {
+    return 'Third Page Title > ' + this.params.something;
   },
-  meta: function () {
+  meta () {
     return {
-      'og:title': function () {
-        return "Third Page Title > " + this.params.something;
+      'og:title' () {
+        return 'Third Page Title > ' + this.params.something;
       },
-      description: "Third Page description " + this.params.something
+      description: 'Third Page description ' + this.params.something
     };
   },
-  action: function(params, query) {}
+  action() {}
 });
 
 group = FlowRouter.group({
   prefix: '/group',
-  title: "GROUP TITLE",
+  title: 'GROUP TITLE',
   titlePrefix: 'Group > ',
-  meta: function () {
+  meta() {
     return {
-      'og:title': function () {
-        return "Group lvl 1";
+      'og:title'() {
+        return 'Group lvl 1';
       },
-      description: "Group lvl 1"
+      description: 'Group lvl 1'
     };
   }
 });
@@ -125,17 +124,17 @@ group = FlowRouter.group({
 group.route('/groupPage1', {
   name: 'groupPage1',
   title: 'Group lvl 1',
-  action: function(params, query) {}
+  action() {}
 });
 
 nestedGroup = group.group({
   prefix: '/level2',
-  title: "LEVEL2 GROUP TITLE",
+  title: 'LEVEL2 GROUP TITLE',
   titlePrefix: 'Group Level 2 > ',
-  meta: function () {
+  meta() {
     return {
-      description: function () {
-        return "Group lvl 2";
+      description() {
+        return 'Group lvl 2';
       }
     };
   }
@@ -144,7 +143,7 @@ nestedGroup = group.group({
 nestedGroup.route('/withoutTitle', {
   name: 'lvl2',
   title: 'Group lvl 2',
-  action: function(params, query) {}
+  action() {}
 });
 
 import { FlowRouterMeta, FlowRouterTitle } from 'meteor/ostrio:flow-router-meta';
@@ -153,7 +152,7 @@ new FlowRouterMeta(FlowRouter);
 FlowRouter.go('/');
 
 Tinytest.addAsync('Global Defaults', function (test, next) {
-  setTimeout(function () {
+  setTimeout(() => {
     test.equal(document.title, 'Default title');
     test.equal($('link[data-name="twbs"]').attr('href'), 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css');
     test.equal($('link[data-name="twbs"]').attr('rel'), 'stylesheet');
@@ -170,7 +169,7 @@ Tinytest.addAsync('Global Defaults', function (test, next) {
 
 Tinytest.addAsync('Meta, script, link (CSS) - String', function (test, next) {
   FlowRouter.go('secondPage');
-  setTimeout(function () {
+  setTimeout(() => {
     test.equal(document.title, 'Second Page title');
 
     test.equal($('meta[data-name="robots"]').attr('content'), 'index, follow');
@@ -193,7 +192,7 @@ Tinytest.addAsync('Meta, script, link (CSS) - String', function (test, next) {
 Tinytest.addAsync('Meta, script, link (CSS) - Function, dynamic', function (test, next) {
   var _str = Random.id();
   FlowRouter.go('thirdPage', {something: _str});
-  setTimeout(function () {
+  setTimeout(() => {
     test.equal(document.title, 'Third Page Title > ' + _str);
 
     test.equal($('meta[data-name="description"]').attr('content'), 'Third Page description ' + _str);
@@ -212,7 +211,7 @@ Tinytest.addAsync('Meta, script, link (CSS) - Function, dynamic', function (test
 
 Tinytest.addAsync('Meta, script, link (CSS) - Unset via null', function (test, next) {
   FlowRouter.go('unset');
-  setTimeout(function () {
+  setTimeout(() => {
     test.equal(document.title, 'Unset Page title');
     test.equal($('meta[data-name="description"]')[0], undefined);
     test.equal($('meta[data-name="description"]').attr('content'), undefined);
@@ -230,7 +229,7 @@ Tinytest.addAsync('Meta, script, link (CSS) - Unset via null', function (test, n
 
 Tinytest.addAsync('404 via FlowRouter.notFound', function (test, next) {
   FlowRouter.go('/not/exists/for/sure');
-  setTimeout(function () {
+  setTimeout(() => {
     test.equal(document.title, '404: Page not found');
     test.equal($('meta[data-name="robots"]').attr('content'), 'noindex, nofollow');
     test.equal($('meta[data-name="robots"]').attr('name'), 'robots');
@@ -253,7 +252,7 @@ Tinytest.addAsync('404 via FlowRouter.notFound', function (test, next) {
 
 Tinytest.addAsync('Group - level 1', function (test, next) {
   FlowRouter.go('groupPage1');
-  setTimeout(function () {
+  setTimeout(() => {
     test.equal(document.title, 'Group > Group lvl 1');
 
     test.equal($('meta[data-name="description"]').attr('content'), 'Group lvl 1');
@@ -264,7 +263,7 @@ Tinytest.addAsync('Group - level 1', function (test, next) {
 
 Tinytest.addAsync('Group - level 2', function (test, next) {
   FlowRouter.go('lvl2');
-  setTimeout(function () {
+  setTimeout(() => {
     test.equal(document.title, 'Group > Group Level 2 > Group lvl 2');
 
     test.equal($('meta[data-name="description"]').attr('content'), 'Group lvl 2');
