@@ -1,10 +1,10 @@
 Reactive meta tags, JavaScript and CSSs for Meteor and flow-router-extra
 ========
-Change meta tags on the fly within [flow-router-extra](https://github.com/VeliovGroup/flow-router). This package can create `meta` tags, `script` and `link` tags as well.
+Change meta tags on the fly within [`flow-router-extra`](https://github.com/VeliovGroup/flow-router). This package can create `meta` tags, `script` and `link` tags as well.
 
 This package may also help to use dynamic CSSs and JSs, so you may use different style sheets - for different routes.
 
-__Important Notice__: This package oriented to work with [flow-router-extra](https://github.com/VeliovGroup/flow-router). It is extended fork of [kadira:flow-router](https://github.com/kadirahq/flow-router).
+__Important Notice__: This package oriented to work with [`flow-router-extra`](https://github.com/VeliovGroup/flow-router). It is extended fork of `kadira:flow-router`.
 
 This package supports `meta`, `script` and `link` options (properties) defined on methods below, ordered by prioritization:
  - `FlowRouter.route()` [*overrides all*]
@@ -45,9 +45,9 @@ import { FlowRouterMeta, FlowRouterTitle } from 'meteor/ostrio:flow-router-meta'
 Usage:
 ========
 You need to initialize `FlowRouterMeta` and `FlowRouterTitle` classes by passing `FlowRouter` object. Right after creating all your routes:
-```javascript
+```jsx
 FlowRouter.route('/', {
-  action: function () { /* ... */ },
+  action() { /* ... */ },
   title: "Title"
   /* ... */
 });
@@ -57,7 +57,7 @@ new FlowRouterTitle(FlowRouter);
 ```
 
 #### Set CSS and JS per route:
-```javascript
+```jsx
 // Set default JS and CSS for all routes
 FlowRouter.globals.push({
   link: {
@@ -74,7 +74,7 @@ FlowRouter.globals.push({
 // Rewrite default JS and CSS, for second route, via controller:
 FlowRouter.route('/secondPage', {
   name: 'secondPage',
-  action: function(params, query) {
+  action(params, query) {
     return this.render('layout', 'secondPage');
   },
   link: {
@@ -91,7 +91,7 @@ FlowRouter.route('/secondPage', {
 // Unset defaults, via controller:
 FlowRouter.route('/secondPage', {
   name: 'secondPage',
-  action: function(params, query) {
+  action(params, query) {
     return this.render('layout', 'secondPage');
   },
   link: {
@@ -103,7 +103,7 @@ FlowRouter.route('/secondPage', {
 });
 
 // Rewrite default JS and CSS, for route group:
-var group = FlowRouter.group({
+const group = FlowRouter.group({
   link: {
     twbs: {
       rel: 'stylesheet',
@@ -117,27 +117,27 @@ var group = FlowRouter.group({
 
 group.route('/groupPage1', {
   name: 'groupPage1',
-  action: function(params, query) {
+  action(params, query) {
     return this.render('layout', 'groupPage1');
   }
 });
 ```
 
 #### Use function as value:
-```javascript
+```jsx
 FlowRouter.route('/routePath', {
   name: 'routeName',
   meta: {
     url: {
       property: 'og:url',
       itemprop: 'url',
-      content: function() {
+      content() {
         return document.location.href;
       }
     }
   },
   link: {
-    canonical: function() {
+    canonical() {
       return document.location.href;
     }
   }
@@ -146,20 +146,20 @@ FlowRouter.route('/routePath', {
 
 ### Use function context:
 *Read about* [`data`](https://github.com/VeliovGroup/flow-router#data-hook) *hook.*
-```javascript
+```jsx
 FlowRouter.route('/post/:_id', {
   name: 'post',
-  waitOn: function(params) {
+  waitOn(params) {
     return [Meteor.subscribe('post', params._id)];
   },
-  data: function(params) {
+  data(params) {
     return Collection.Posts.findOne(params._id);
   },
   meta: {
     keywords: {
       name: 'keywords',
       itemprop: 'keywords',
-      content: function(params, query, data) {
+      content(params, query, data) {
         if (data == null) {
           data = {};
         }
@@ -167,7 +167,7 @@ FlowRouter.route('/post/:_id', {
       }
     }
   },
-  title: function(params, query, data) {
+  title(params, query, data) {
     if (data == null) {
       data = {};
     }
@@ -182,7 +182,7 @@ FlowRouter.route('/post/:_id', {
 
 #### Other examples:
 Set only `name` and `content` attributes on `meta` tag:
-```javascript
+```jsx
 FlowRouter.route('/routePath', {
   name: 'routeName',
   meta: {
@@ -192,7 +192,7 @@ FlowRouter.route('/routePath', {
 ```
 
 Set only `rel` and `href` attributes on `link` tag:
-```javascript
+```jsx
 FlowRouter.route('/routePath', {
   name: 'routeName',
   link: {
@@ -202,7 +202,7 @@ FlowRouter.route('/routePath', {
 ```
 
 Set multiple attributes on `meta` tag:
-```javascript
+```jsx
 FlowRouter.route('/routePath', {
   name: 'routeName',
   meta: {
@@ -217,7 +217,7 @@ FlowRouter.route('/routePath', {
 ```
 
 Set multiple attributes on `link` tag:
-```javascript
+```jsx
 FlowRouter.route('/routePath', {
   name: 'routeName',
   link: {
@@ -232,7 +232,7 @@ FlowRouter.route('/routePath', {
 ```
 
 #### Bootstrap configuration:
-```javascript
+```jsx
 FlowRouter.route('/routePath', {
   name: 'routeName',
   meta: {
@@ -262,19 +262,19 @@ FlowRouter.route('/routePath', {
       content: 'http://example.com'
     },
     'og:type': 'website',
-    'og:title': function() {
+    'og:title'() {
       return document.title;
     },
     'og:site_name': 'My Awesome Site',
     url: {
       property: 'og:url',
       itemprop: 'url',
-      content: function() {
+      content() {
         return window.location.href;
       }
     },
     'twitter:card': 'summary',
-    'twitter:title': function() {
+    'twitter:title'() {
       return document.title;
     },
     'twitter:description': 'Default description',
@@ -298,7 +298,7 @@ FlowRouter.route('/routePath', {
     stylesheet: "https://maxcdn.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css",
 
     // <link rel="canonical" href="http://example.com">
-    canonical: function() {
+    canonical() {
       return document.location.href;
     },
 
