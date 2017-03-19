@@ -74,7 +74,7 @@ export class FlowRouterMeta {
     const _arguments = [context.params, context.queryParams, data];
     const head = document.getElementsByTagName('head')[0];
     if (!head) {
-      return false;
+      return;
     }
 
     for (let k = this.tags.length - 1; k >= 0; k--) {
@@ -104,7 +104,8 @@ export class FlowRouterMeta {
 
       for (let key in elements[this.tags[k]]) {
         let element = head.querySelectorAll(`${this.tags[k]}[data-name="${key}"]`)[0];
-        let _stop    = false;
+        let _stop   = false;
+
         if (!element) {
           element = document.createElement(this.tags[k]);
           head.appendChild(element);
