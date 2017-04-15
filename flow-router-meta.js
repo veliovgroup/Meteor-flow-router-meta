@@ -1,3 +1,4 @@
+import { _ }               from 'meteor/underscore';
 export { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';
 
 export class FlowRouterMeta {
