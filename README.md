@@ -1,15 +1,18 @@
-Reactive meta tags, JavaScript and CSSs for Meteor and flow-router-extra
+Reactive meta tags, JavaScript and CSSs
 ========
 Change meta tags on the fly within [`flow-router-extra`](https://github.com/VeliovGroup/flow-router). This package can create `meta` tags, `script` and `link` tags as well.
 
-This package may also help to use dynamic CSSs and JSs, so you may use different style sheets - for different routes.
+Features:
+ - 100% tests coverage;
+ - Per route, per group, and default (*all routes*) `meta` tags;
+ - Per route, per group, and default (*all routes*) `script`s;
+ - Per route, per group, and default (*all routes*) `link`, like CSS files.
 
-__Important Notice__: This package oriented to work with [`flow-router-extra`](https://github.com/VeliovGroup/flow-router). It is extended fork of `kadira:flow-router`.
-
-This package supports `meta`, `script` and `link` options (properties) defined on methods below, ordered by prioritization:
- - `FlowRouter.route()` [*overrides all*]
+Various ways to set `meta`, `script` and `link` tags, ordered by prioritization:
+ - `FlowRouter.route()` [*overrides all below*]
  - `FlowRouter.group()`
- - `FlowRouter.globals` [*might be overridden by any above*]
+ - `FlowRouter.globals`
+ - Head template `<meta/>`, `<link/>`, `<script/>` tags [*might be overridden by any above*]
 
 __Note__: this package implies [ostrio:flow-router-title](https://atmospherejs.com/ostrio/flow-router-title) package.
 
