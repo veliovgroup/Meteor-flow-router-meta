@@ -1,7 +1,10 @@
+import { $ }          from 'meteor/jquery';
+import { Meteor }     from 'meteor/meteor';
+import { Random }     from 'meteor/random';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 if (Meteor.isServer) {
-  return false;
+  return;
 }
 
 FlowRouter.globals.push({
@@ -107,7 +110,7 @@ FlowRouter.route('/thirdPage/:something', {
   action() {}
 });
 
-group = FlowRouter.group({
+const group = FlowRouter.group({
   prefix: '/group',
   title: 'GROUP TITLE',
   titlePrefix: 'Group > ',
@@ -127,7 +130,7 @@ group.route('/groupPage1', {
   action() {}
 });
 
-nestedGroup = group.group({
+const nestedGroup = group.group({
   prefix: '/level2',
   title: 'LEVEL2 GROUP TITLE',
   titlePrefix: 'Group Level 2 > ',
