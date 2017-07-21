@@ -39,7 +39,7 @@ FlowRouter.globals.push({
   }
 });
 
-FlowRouter.notFound = {
+FlowRouter.route('*', {
   action() {},
   title: '404: Page not found',
   meta: {
@@ -52,7 +52,7 @@ FlowRouter.notFound = {
       return Meteor.absoluteUrl((FlowRouter.current().path || document.location.pathname).replace(/^\//g, ''));
     }
   }
-};
+});
 
 FlowRouter.route('/', {
   name: 'index',
