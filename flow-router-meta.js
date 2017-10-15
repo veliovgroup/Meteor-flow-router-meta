@@ -166,7 +166,11 @@ export class FlowRouterMeta {
           if (attributes) {
             for (let attrName in attributes) {
               if (_.isString(attributes[attrName])) {
-                element.setAttribute(attrName, attributes[attrName]);
+                if (attrName === 'innerHTML') {
+                  element.innerHTML = attributes[attrName];
+                } else {
+                  element.setAttribute(attrName, attributes[attrName]);
+                }
               }
             }
 

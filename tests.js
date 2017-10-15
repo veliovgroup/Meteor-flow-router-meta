@@ -29,7 +29,8 @@ FlowRouter.globals.push({
 
 FlowRouter.globals.push({
   script: {
-    twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js'
+    twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js',
+    ldjson: null
   }
 });
 
@@ -106,6 +107,34 @@ FlowRouter.route('/thirdPage/:something', {
       },
       description: 'Third Page description ' + this.params.something
     };
+  },
+  action() {}
+});
+
+const ldjsonContent = JSON.stringify({
+  "@context": "http://schema.org/",
+  "@type": "Recipe",
+  "name": "Grandma's Holiday Apple Pie",
+  "author": "Elaine Smith",
+  "image": "http://images.edge-generalmills.com/56459281-6fe6-4d9d-984f-385c9488d824.jpg",
+  "description": "A classic apple pie.",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4",
+    "reviewCount": "276",
+    "bestRating": "5",
+    "worstRating": "1"
+  }
+});
+
+FlowRouter.route('/fourthPage', {
+  name: 'fourthPage',
+  title: 'Fourth Page title',
+  script: {
+    ldjson: {
+      type: 'application/ld+json',
+      innerHTML: ldjsonContent
+    }
   },
   action() {}
 });
@@ -272,5 +301,15 @@ Tinytest.addAsync('Group - level 2', function (test, next) {
     test.equal($('meta[data-name="description"]').attr('content'), 'Group lvl 2');
     test.equal($('meta[data-name="og:title"]').attr('content'), 'Group lvl 1');
     next();
+  }, 100);
+});
+
+Tinytest.addAsync('application/ld+json', function (test, next) {
+  FlowRouter.go('fourthPage');
+  setTimeout(() => {
+    test.equal($('script[data-name="ldjson"]')[0].innerHTML, ldjsonContent);
+    test.equal($('script[data-name="ldjson"]').attr('type'), 'application/ld+json');
+    next();
+    FlowRouter.go('/');
   }, 100);
 });
