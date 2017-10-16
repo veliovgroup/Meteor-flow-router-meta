@@ -21,6 +21,7 @@ ToC:
  - [Installation](https://github.com/VeliovGroup/Meteor-flow-router-meta#install)
  - [Demo application](https://github.com/VeliovGroup/Meteor-flow-router-meta#demo-application)
  - [Set CSS and JS per route](https://github.com/VeliovGroup/Meteor-flow-router-meta#set-css-and-js-per-route)
+ - [Set `application/ld+json`](https://github.com/VeliovGroup/Meteor-flow-router-meta#ldjson)
  - [Use function as value](https://github.com/VeliovGroup/Meteor-flow-router-meta#use-function-as-value)
  - [Use function's context](https://github.com/VeliovGroup/Meteor-flow-router-meta#use-function-context)
  - [Bootstrap configuration](https://github.com/VeliovGroup/Meteor-flow-router-meta#bootstrap-configuration)
@@ -124,6 +125,36 @@ group.route('/groupPage1', {
   action(params, query) {
     return this.render('layout', 'groupPage1');
   }
+});
+```
+
+#### ldjson:
+This method uses special property named `innerHTML` which set script's content instead of attribute. This method and property can be used in the any other case when you need to set script's contents.
+```jsx
+FlowRouter.route('/fourthPage', {
+  name: 'fourthPage',
+  title: 'Fourth Page title',
+  script: {
+    ldjson: {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        "@context": "http://schema.org/",
+        "@type": "Recipe",
+        "name": "Grandma's Holiday Apple Pie",
+        "author": "Elaine Smith",
+        "image": "http://images.edge-generalmills.com/56459281-6fe6-4d9d-984f-385c9488d824.jpg",
+        "description": "A classic apple pie.",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4",
+          "reviewCount": "276",
+          "bestRating": "5",
+          "worstRating": "1"
+        }
+      })
+    }
+  },
+  action() { /*...*/ }
 });
 ```
 
@@ -355,7 +386,7 @@ FlowRouter.route('/routePath', {
 ```
 
 Support this project:
-========
-This project can't be possible without [ostr.io](https://ostr.io).
+======
+This project wouldn't be possible without [ostr.io](https://ostr.io).
 
-By using [ostr.io](https://ostr.io) you are not only [protecting domain names](https://ostr.io/info/domain-names-protection), [monitoring websites and servers](https://ostr.io/info/monitoring), using [Prerendering for better SEO](https://ostr.io/info/prerendering) of your JavaScript website, but support our Open Source activity, and great packages like this one are available for free.
+Using [ostr.io](https://ostr.io) you are not only [protecting domain names](https://ostr.io/info/domain-names-protection), [monitoring websites and servers](https://ostr.io/info/monitoring), using [Prerendering for better SEO](https://ostr.io/info/prerendering) of your JavaScript website, but support our Open Source activity, and great packages like this one could be available for free.
