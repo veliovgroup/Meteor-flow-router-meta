@@ -16,8 +16,7 @@ Various ways to set `meta`, `script` and `link` tags, ordered by prioritization:
 
 __Note__: this package implies [ostrio:flow-router-title](https://atmospherejs.com/ostrio/flow-router-title) package.
 
-ToC:
-========
+### ToC:
  - [Installation](https://github.com/VeliovGroup/Meteor-flow-router-meta#install)
  - [Demo application](https://github.com/VeliovGroup/Meteor-flow-router-meta#demo-application)
  - [Set CSS and JS per route](https://github.com/VeliovGroup/Meteor-flow-router-meta#set-css-and-js-per-route)
@@ -28,27 +27,27 @@ ToC:
  - [Other examples](https://github.com/VeliovGroup/Meteor-flow-router-meta#other-examples)
  - [Support this project](https://github.com/VeliovGroup/Meteor-flow-router-meta#support-this-project)
 
-Install:
-========
+### Install:
 ```shell
 meteor add ostrio:flow-router-meta
 ```
 
-Demos / Tests:
-========
- - [Source](https://github.com/VeliovGroup/Meteor-flow-router-meta/tree/master/demo)
+### Demos / Tests:
+ - [Demo source](https://github.com/VeliovGroup/Meteor-flow-router-meta/tree/master/demo)
  - [Tests](https://github.com/VeliovGroup/Meteor-flow-router-meta/tree/master/tests.js)
 
-ES6 Import:
-========
+### ES6 Import:
 ```jsx
 import { FlowRouterMeta } from 'meteor/ostrio:flow-router-meta';
 // This library implies ostrio:flow-router-title package, and both can be imported in single line:
 import { FlowRouterMeta, FlowRouterTitle } from 'meteor/ostrio:flow-router-meta';
 ```
 
-Usage:
-========
+### Related Packages:
+ - [flow-router-title](https://github.com/VeliovGroup/Meteor-flow-router-title#reactive-page-title) - Change document.title on the fly within FlowRouter-Extra
+ - [flow-router-extra](https://github.com/VeliovGroup/flow-router#flowrouter-extra) - Carefully extended FlowRouter
+
+### Usage:
 You need to initialize `FlowRouterMeta` and `FlowRouterTitle` classes by passing `FlowRouter` object. Right after creating all your routes:
 ```jsx
 FlowRouter.route('/', {
@@ -179,7 +178,7 @@ FlowRouter.route('/routePath', {
 });
 ```
 
-### Use function context:
+#### Use function context:
 *Read about* [`data`](https://github.com/VeliovGroup/flow-router#data-hook) *hook.*
 ```jsx
 FlowRouter.route('/post/:_id', {
@@ -385,8 +384,7 @@ FlowRouter.route('/routePath', {
 });
 ```
 
-Support this project:
-======
+### Support this project:
 This project wouldn't be possible without [ostr.io](https://ostr.io).
 
 Using [ostr.io](https://ostr.io) you are not only [protecting domain names](https://ostr.io/info/domain-names-protection), [monitoring websites and servers](https://ostr.io/info/monitoring), using [Prerendering for better SEO](https://ostr.io/info/prerendering) of your JavaScript website, but support our Open Source activity, and great packages like this one could be available for free.
