@@ -179,7 +179,7 @@ FlowRouter.route('/routePath', {
 ```
 
 #### Use function context:
-*Read about* [`data`](hhttps://github.com/VeliovGroup/flow-router/blob/master/docs/hooks/data.md) *hook.*
+*Read about* [`data`](https://github.com/VeliovGroup/flow-router/blob/master/docs/hooks/data.md) *hook.*
 ```jsx
 FlowRouter.route('/post/:_id', {
   name: 'post',
