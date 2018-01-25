@@ -181,9 +181,9 @@ nestedGroup.route('/withoutTitle', {
 import { FlowRouterMeta, FlowRouterTitle } from 'meteor/ostrio:flow-router-meta';
 new FlowRouterTitle(FlowRouter);
 new FlowRouterMeta(FlowRouter);
-FlowRouter.go('/');
 
 Tinytest.addAsync('Global Defaults', function (test, next) {
+  FlowRouter.go('/');
   setTimeout(() => {
     test.equal(document.title, 'Default title');
     test.equal($('link[data-name="twbs"]').attr('href'), 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css');
