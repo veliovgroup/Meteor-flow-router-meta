@@ -13,6 +13,10 @@ FlowRouter.globals.push({
 
 FlowRouter.globals.push({
   link: {
+    favicon: {
+      rel: 'shortcut icon',
+      href: '/global.png'
+    },
     twbs: {
       rel: 'stylesheet',
       href: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'
@@ -48,6 +52,10 @@ FlowRouter.route('*', {
     description: 'Non-existent route'
   },
   link: {
+    favicon: {
+      href: '/404.png',
+      rel: 'shortcut icon'
+    },
     twbs: null,
     canonical() {
       return Meteor.absoluteUrl((FlowRouter.current().path || document.location.pathname).replace(/^\//g, ''));
@@ -68,6 +76,10 @@ FlowRouter.route('/secondPage', {
     description: 'Second Page description'
   },
   link: {
+    favicon: {
+      rel: 'shortcut icon',
+      href: '/second.png'
+    },
     twbs: {
       rel: 'stylesheet',
       href: 'https://maxcdn.bootstrapcdn.com/bootstrap/2.2.0/css/bootstrap.min.css'
@@ -87,6 +99,7 @@ FlowRouter.route('/unset', {
     description: null
   },
   link: {
+    favicon: null,
     twbs: null
   },
   script: {
@@ -186,6 +199,9 @@ Tinytest.addAsync('Global Defaults', function (test, next) {
   FlowRouter.go('/');
   setTimeout(() => {
     test.equal(document.title, 'Default title');
+    test.equal($('link[data-name="favicon"]').attr('href'), '/global.png');
+    test.equal($('link[data-name="favicon"]').attr('rel'), 'shortcut icon');
+
     test.equal($('link[data-name="twbs"]').attr('href'), 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css');
     test.equal($('link[data-name="twbs"]').attr('rel'), 'stylesheet');
 
@@ -203,6 +219,9 @@ Tinytest.addAsync('Meta, script, link (CSS) - String', function (test, next) {
   FlowRouter.go('secondPage');
   setTimeout(() => {
     test.equal(document.title, 'Second Page title');
+
+    test.equal($('link[data-name="favicon"]').attr('href'), '/second.png');
+    test.equal($('link[data-name="favicon"]').attr('rel'), 'shortcut icon');
 
     test.equal($('meta[data-name="robots"]').attr('content'), 'index, follow');
     test.equal($('meta[data-name="robots"]').attr('name'), 'robots');
@@ -245,6 +264,7 @@ Tinytest.addAsync('Meta, script, link (CSS) - Unset via null', function (test, n
   FlowRouter.go('unset');
   setTimeout(() => {
     test.equal(document.title, 'Unset Page title');
+    test.equal($('link[data-name="favicon"]')[0], undefined);
     test.equal($('meta[data-name="description"]')[0], undefined);
     test.equal($('meta[data-name="description"]').attr('content'), undefined);
     test.equal($('meta[data-name="robots"]').attr('content'), undefined);
@@ -263,6 +283,9 @@ Tinytest.addAsync('404 via FlowRouter.notFound', function (test, next) {
   FlowRouter.go('/not/exists/for/sure');
   setTimeout(() => {
     test.equal(document.title, '404: Page not found');
+    test.equal($('link[data-name="favicon"]').attr('href'), '/404.png');
+    test.equal($('link[data-name="favicon"]').attr('rel'), 'shortcut icon');
+
     test.equal($('meta[data-name="robots"]').attr('content'), 'noindex, nofollow');
     test.equal($('meta[data-name="robots"]').attr('name'), 'robots');
     test.equal($('meta[data-name="description"]').attr('content'), 'Non-existent route');

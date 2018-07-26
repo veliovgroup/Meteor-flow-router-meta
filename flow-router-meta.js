@@ -1,5 +1,56 @@
-import { _ }               from 'meteor/underscore';
 export { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';
+
+const helpers = {
+  isObject(obj) {
+    if (this.isArray(obj) || this.isFunction(obj)) {
+      return false;
+    }
+    return obj === Object(obj);
+  },
+  isArray(obj) {
+    return Array.isArray(obj);
+  },
+  isFunction(obj) {
+    return typeof obj === 'function' || false;
+  },
+  isEmpty(obj) {
+    if (this.isDate(obj)) {
+      return false;
+    }
+    if (this.isObject(obj)) {
+      return !Object.keys(obj).length;
+    }
+    if (this.isArray(obj) || this.isString(obj)) {
+      return !obj.length;
+    }
+    return false;
+  },
+  has(_obj, path) {
+    let obj = _obj;
+    if (!this.isObject(obj)) {
+      return false;
+    }
+    if (!this.isArray(path)) {
+      return this.isObject(obj) && Object.prototype.hasOwnProperty.call(obj, path);
+    }
+
+    const length = path.length;
+    for (let i = 0; i < length; i++) {
+      if (!Object.prototype.hasOwnProperty.call(obj, path[i])) {
+        return false;
+      }
+      obj = obj[path[i]];
+    }
+    return !!length;
+  }
+};
+
+const _helpers = ['String', 'Date'];
+for (let i = 0; i < _helpers.length; i++) {
+  helpers['is' + _helpers[i]] = function (obj) {
+    return Object.prototype.toString.call(obj) === '[object ' + _helpers[i] + ']';
+  };
+}
 
 export class FlowRouterMeta {
   constructor(router) {
@@ -23,8 +74,8 @@ export class FlowRouterMeta {
         }
       }
 
-      if (!_.isEmpty(self.router._current)) {
-        setTimeout(() => {self.metaHandler.call(self, _.extend(self.router._current, _context));}, 5);
+      if (!helpers.isEmpty(self.router._current)) {
+        setTimeout(() => {self.metaHandler.call(self, Object.assign({}, self.router._current, _context));}, 5);
       } else {
         setTimeout(() => {self.metaHandler.call(self, _context);}, 5);
       }
@@ -32,10 +83,11 @@ export class FlowRouterMeta {
     };
   }
 
-  _fromParent(group, type, _context, _arguments, result = {}) {
+  _fromParent(group, type, _context, _arguments, _result = {}) {
+    let result = _result;
     if (group) {
-      if (group.options && _.has(group.options, type)) {
-        result = _.extend(this._getValue(group.options[type], _context, _arguments), result);
+      if (group.options && helpers.has(group.options, type)) {
+        result = Object.assign({}, this._getValue(group.options[type], _context, _arguments), result);
       }
 
       if (group.parent) {
@@ -47,19 +99,19 @@ export class FlowRouterMeta {
 
   _getValue(prop, _context, _arguments) {
     let result = {};
-    if (_.isFunction(prop)) {
+    if (helpers.isFunction(prop)) {
       result = this._getValue(prop.apply(_context, _arguments), _context, _arguments);
-    } else if (_.isString(prop)) {
+    } else if (helpers.isString(prop)) {
       result = prop;
-    } else if (_.isArray(prop)) {
+    } else if (helpers.isArray(prop)) {
       for (var i = prop.length - 1; i >= 0; i--) {
         result[i] = this._getValue(prop[i], _context, _arguments, i);
       }
-    } else if (_.isObject(prop)) {
+    } else if (helpers.isObject(prop)) {
       Object.keys(prop).forEach((key) => {
         result[key] = this._getValue(prop[key], _context, _arguments, key);
       });
-    } else if (_.isNull(prop)) {
+    } else if (prop === null) {
       result = null;
     }
     return result;
@@ -67,7 +119,7 @@ export class FlowRouterMeta {
 
   metaHandler(context, redirect, stop, data) {
     let elements = {};
-    const _context = _.extend({
+    const _context = Object.assign({}, {
       query: context.queryParams,
       params: {}
     }, context);
@@ -85,25 +137,25 @@ export class FlowRouterMeta {
 
       if (this.router.globals && this.router.globals.length) {
         for (let i = this.router.globals.length - 1; i >= 0; i--) {
-          if (_.has(this.router.globals[i], this.tags[k])) {
-            elements[this.tags[k]] = _.extend(elements[this.tags[k]], this._getValue(this.router.globals[i][this.tags[k]], _context, _arguments));
+          if (helpers.has(this.router.globals[i], this.tags[k])) {
+            elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._getValue(this.router.globals[i][this.tags[k]], _context, _arguments));
           }
         }
       }
 
       if (context.route) {
         if (context.route.group) {
-          elements[this.tags[k]] = _.extend(elements[this.tags[k]], this._fromParent(context.route.group, this.tags[k], _context, _arguments));
+          elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._fromParent(context.route.group, this.tags[k], _context, _arguments));
         }
 
         if (context.route.options) {
-          if (_.has(context.route.options, this.tags[k])) {
-            elements[this.tags[k]] = _.extend(elements[this.tags[k]], this._getValue(context.route.options[this.tags[k]], _context, _arguments));
+          if (helpers.has(context.route.options, this.tags[k])) {
+            elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._getValue(context.route.options[this.tags[k]], _context, _arguments));
           }
         }
       }
 
-      for (let key in elements[this.tags[k]]) {
+      for (const key in elements[this.tags[k]]) {
         let element = head.querySelectorAll(`${this.tags[k]}[data-name="${key}"]`)[0];
         let _stop   = false;
 
@@ -112,7 +164,7 @@ export class FlowRouterMeta {
           head.appendChild(element);
         }
 
-        if (_.isEmpty(elements[this.tags[k]][key]) || _.isNull(elements[this.tags[k]][key])) {
+        if (helpers.isEmpty(elements[this.tags[k]][key]) || elements[this.tags[k]][key] === null) {
           head.removeChild(element);
           _stop = true;
         }
@@ -120,7 +172,7 @@ export class FlowRouterMeta {
         if (!_stop) {
           element.dataset.name = key;
           let attributes = elements[this.tags[k]][key];
-          if (_.isString(attributes)) {
+          if (helpers.isString(attributes)) {
             switch (this.tags[k]) {
             case 'meta':
               attributes = {
@@ -143,7 +195,7 @@ export class FlowRouterMeta {
               attributes = void 0;
               break;
             }
-          } else if (_.isObject(attributes)) {
+          } else if (helpers.isObject(attributes)) {
             let defaultAttrs = {};
             switch (this.tags[k]) {
             case 'meta':
@@ -160,12 +212,12 @@ export class FlowRouterMeta {
               break;
             }
 
-            attributes = _.extend(defaultAttrs, attributes);
+            attributes = Object.assign({}, defaultAttrs, attributes);
           }
 
           if (attributes) {
-            for (let attrName in attributes) {
-              if (_.isString(attributes[attrName])) {
+            for (const attrName in attributes) {
+              if (helpers.isString(attributes[attrName])) {
                 if (attrName === 'innerHTML') {
                   element.innerHTML = attributes[attrName];
                 } else {
@@ -176,7 +228,7 @@ export class FlowRouterMeta {
 
             if (element.attributes && element.attributes.length) {
               for (let i = element.attributes.length - 1; i >= 0; i--) {
-                if (element.attributes[i].name !== 'data-name' && !_.has(attributes, element.attributes[i].name)) {
+                if (element.attributes[i].name !== 'data-name' && !helpers.has(attributes, element.attributes[i].name)) {
                   element.removeAttribute(element.attributes[i].name);
                 }
               }
