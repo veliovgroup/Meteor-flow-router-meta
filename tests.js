@@ -125,18 +125,18 @@ FlowRouter.route('/thirdPage/:something', {
 });
 
 const ldjsonContent = JSON.stringify({
-  "@context": "http://schema.org/",
-  "@type": "Recipe",
-  "name": "Grandma's Holiday Apple Pie",
-  "author": "Elaine Smith",
-  "image": "http://images.edge-generalmills.com/56459281-6fe6-4d9d-984f-385c9488d824.jpg",
-  "description": "A classic apple pie.",
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4",
-    "reviewCount": "276",
-    "bestRating": "5",
-    "worstRating": "1"
+  '@context': 'http://schema.org/',
+  '@type': 'Recipe',
+  name: 'Grandma\'s Holiday Apple Pie',
+  author: 'Elaine Smith',
+  image: 'http://images.edge-generalmills.com/56459281-6fe6-4d9d-984f-385c9488d824.jpg',
+  description: 'A classic apple pie.',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4',
+    reviewCount: '276',
+    bestRating: '5',
+    worstRating: '1'
   }
 });
 
