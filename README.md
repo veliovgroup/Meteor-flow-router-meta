@@ -1,5 +1,9 @@
 # Reactive meta tags, JavaScript and CSSs
 
+<a href="https://www.patreon.com/bePatron?u=20396046">
+  <img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" width="160">
+</a>
+
 Change meta tags on the fly within [`flow-router-extra`](https://github.com/VeliovGroup/flow-router). This package can create `meta` tags, `script` and `link` tags as well.
 
 ## Features:
@@ -59,6 +63,9 @@ import { FlowRouterMeta, FlowRouterTitle } from 'meteor/ostrio:flow-router-meta'
 You need to initialize `FlowRouterMeta` and `FlowRouterTitle` classes by passing `FlowRouter` object. Right after creating all your routes:
 
 ```js
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import { FlowRouterMeta, FlowRouterTitle } from 'meteor/ostrio:flow-router-meta';
+
 FlowRouter.route('/', {
   action() { /* ... */ },
   title: 'Title'
@@ -72,6 +79,8 @@ new FlowRouterTitle(FlowRouter);
 ### Set CSS and JS per route:
 
 ```js
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+
 // Set default JS and CSS for all routes
 FlowRouter.globals.push({
   link: {
@@ -88,7 +97,7 @@ FlowRouter.globals.push({
 // Rewrite default JS and CSS, for second route, via controller:
 FlowRouter.route('/secondPage', {
   name: 'secondPage',
-  action(params, query) {
+  action() {
     return this.render('layout', 'secondPage');
   },
   link: {
@@ -105,7 +114,7 @@ FlowRouter.route('/secondPage', {
 // Unset defaults, via controller:
 FlowRouter.route('/secondPage', {
   name: 'secondPage',
-  action(params, query) {
+  action() {
     return this.render('layout', 'secondPage');
   },
   link: {
@@ -131,7 +140,7 @@ const group = FlowRouter.group({
 
 group.route('/groupPage1', {
   name: 'groupPage1',
-  action(params, query) {
+  action() {
     return this.render('layout', 'groupPage1');
   }
 });
@@ -142,6 +151,8 @@ group.route('/groupPage1', {
 This method uses special property named `innerHTML` which set script's content instead of attribute. This method and property can be used in the any other case when you need to set script's contents.
 
 ```js
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+
 FlowRouter.route('/fourthPage', {
   name: 'fourthPage',
   title: 'Fourth Page title',
@@ -172,6 +183,8 @@ FlowRouter.route('/fourthPage', {
 ### Use function as value:
 
 ```js
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+
 FlowRouter.route('/routePath', {
   name: 'routeName',
   meta: {
@@ -196,6 +209,8 @@ FlowRouter.route('/routePath', {
 *Read about* [`data`](https://github.com/VeliovGroup/flow-router/blob/master/docs/hooks/data.md) *hook.*
 
 ```js
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+
 FlowRouter.route('/post/:_id', {
   name: 'post',
   waitOn(params) {
@@ -281,6 +296,8 @@ FlowRouter.route('/routePath', {
 ### Bootstrap configuration:
 
 ```js
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+
 FlowRouter.route('/routePath', {
   name: 'routeName',
   meta: {
@@ -398,8 +415,26 @@ FlowRouter.route('/routePath', {
 });
 ```
 
+## Running Tests
+
+1. Clone this package
+2. In Terminal (*Console*) go to directory where package is cloned
+3. Then run:
+
+### Meteor/Tinytest
+
+```shell
+# Default
+meteor test-packages ./
+
+# With custom port
+meteor test-packages ./ --port 8888
+
+# With local MongoDB and custom port
+MONGO_URL="mongodb://127.0.0.1:27017/flow-router-meta-tests" meteor test-packages ./ --port 8888
+```
+
 ## Support this project:
 
-This project wouldn't be possible without [ostr.io](https://ostr.io).
-
-Using [ostr.io](https://ostr.io) you are not only [protecting domain names](https://ostr.io/info/domain-names-protection), [monitoring websites and servers](https://ostr.io/info/monitoring), using [Prerendering for better SEO](https://ostr.io/info/prerendering) of your JavaScript website, but support our Open Source activity, and great packages like this one could be available for free.
+- [Become a patron](https://www.patreon.com/bePatron?u=20396046) — support my open source contributions with monthly donation
+- Use [ostr.io](https://ostr.io) — [Monitoring](https://snmp-monitoring.com), [Analytics](https://ostr.io/info/web-analytics), [WebSec](https://domain-protection.info), [Web-CRON](https://web-cron.info) and [Pre-rendering](https://prerendering.com) for a website
