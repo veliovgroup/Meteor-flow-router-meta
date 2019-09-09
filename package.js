@@ -1,6 +1,6 @@
 Package.describe({
   name: 'ostrio:flow-router-meta',
-  version: '2.0.16',
+  version: '2.1.0',
   summary: 'Change meta tags, links to styles (CSS) and scripts on the fly within flow-router',
   git: 'https://github.com/VeliovGroup/Meteor-flow-router-meta',
   documentation: 'README.md'
@@ -8,11 +8,11 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom('METEOR@1.4');
-  api.use(['ecmascript', 'ostrio:flow-router-title@3.1.5'], 'client');
+  api.use(['ecmascript', 'ostrio:flow-router-title@3.2.0'], 'client');
   api.mainModule('flow-router-meta.js', 'client');
 });
 
 Package.onTest(function(api) {
-  api.use(['tinytest', 'ecmascript', 'jquery', 'random', 'ostrio:flow-router-extra@3.6.3', 'ostrio:flow-router-meta'], 'client');
+  api.use(['tinytest', 'ecmascript', 'jquery', 'random', 'ostrio:flow-router-extra@3.7.0', 'ostrio:flow-router-meta'], 'client');
   api.addFiles('tests.js', 'client');
 });
