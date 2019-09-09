@@ -44,23 +44,25 @@ FlowRouter.globals.push({
   }
 });
 
-FlowRouter.route('*', {
-  action() {},
-  title: '404: Page not found',
-  meta: {
-    robots: 'noindex, nofollow',
-    description: 'Non-existent route'
-  },
-  link: {
-    favicon: {
-      href: '/404.png',
-      rel: 'shortcut icon'
+Meteor.startup(() => {
+  FlowRouter.route('*', {
+    action() {},
+    title: '404: Page not found',
+    meta: {
+      robots: 'noindex, nofollow',
+      description: 'Non-existent route'
     },
-    twbs: null,
-    canonical() {
-      return Meteor.absoluteUrl((FlowRouter.current().path || document.location.pathname).replace(/^\//g, ''));
+    link: {
+      favicon: {
+        href: '/404.png',
+        rel: 'shortcut icon'
+      },
+      twbs: null,
+      canonical() {
+        return Meteor.absoluteUrl((FlowRouter.current().path || document.location.pathname).replace(/^\//g, ''));
+      }
     }
-  }
+  });
 });
 
 FlowRouter.route('/', {
@@ -330,7 +332,7 @@ Tinytest.addAsync('Group - level 2', function (test, next) {
 Tinytest.addAsync('application/ld+json', function (test, next) {
   FlowRouter.go('fourthPage');
   setTimeout(() => {
-    test.equal($('script[data-name="ldjson"]')[0].innerHTML, ldjsonContent);
+    test.equal(($('script[data-name="ldjson"]')[0] || {}).innerHTML, ldjsonContent);
     test.equal($('script[data-name="ldjson"]').attr('type'), 'application/ld+json');
     next();
     FlowRouter.go('/');
