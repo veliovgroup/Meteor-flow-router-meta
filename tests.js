@@ -2,6 +2,7 @@ import { $ }          from 'meteor/jquery';
 import { Meteor }     from 'meteor/meteor';
 import { Random }     from 'meteor/random';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import { FlowRouterMeta, FlowRouterTitle } from './flow-router-meta.js';
 
 if (Meteor.isServer) {
   return;
@@ -19,7 +20,7 @@ FlowRouter.globals.push({
     },
     twbs: {
       rel: 'stylesheet',
-      href: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'
+      href: 'https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css'
     },
     canonical: {
       rel: 'canonical',
@@ -33,7 +34,7 @@ FlowRouter.globals.push({
 
 FlowRouter.globals.push({
   script: {
-    twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js',
+    twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js',
     ldjson: null
   }
 });
@@ -84,11 +85,11 @@ FlowRouter.route('/secondPage', {
     },
     twbs: {
       rel: 'stylesheet',
-      href: 'https://maxcdn.bootstrapcdn.com/bootstrap/2.2.0/css/bootstrap.min.css'
+      href: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css'
     }
   },
   script: {
-    twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/2.2.0/js/bootstrap.min.js'
+    twbs: 'https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js'
   },
   action() {}
 });
@@ -193,7 +194,6 @@ nestedGroup.route('/withoutTitle', {
   action() {}
 });
 
-import { FlowRouterMeta, FlowRouterTitle } from 'meteor/ostrio:flow-router-meta';
 new FlowRouterTitle(FlowRouter);
 new FlowRouterMeta(FlowRouter);
 
@@ -204,10 +204,10 @@ Tinytest.addAsync('Global Defaults', function (test, next) {
     test.equal($('link[data-name="favicon"]').attr('href'), '/global.png');
     test.equal($('link[data-name="favicon"]').attr('rel'), 'shortcut icon');
 
-    test.equal($('link[data-name="twbs"]').attr('href'), 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css');
+    test.equal($('link[data-name="twbs"]').attr('href'), 'https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css');
     test.equal($('link[data-name="twbs"]').attr('rel'), 'stylesheet');
 
-    test.equal($('script[data-name="twbs"]').attr('src'), 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js');
+    test.equal($('script[data-name="twbs"]').attr('src'), 'https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js');
 
     test.equal($('link[data-name="canonical"]').attr('href'), Meteor.absoluteUrl((FlowRouter.current().path || document.location.pathname).replace(/^\//g, '')));
     test.equal($('link[data-name="canonical"]').attr('rel'), 'canonical');
@@ -230,10 +230,10 @@ Tinytest.addAsync('Meta, script, link (CSS) - String', function (test, next) {
     test.equal($('meta[data-name="description"]').attr('content'), 'Second Page description');
     test.equal($('meta[data-name="description"]').attr('name'), 'description');
 
-    test.equal($('link[data-name="twbs"]').attr('href'), 'https://maxcdn.bootstrapcdn.com/bootstrap/2.2.0/css/bootstrap.min.css');
+    test.equal($('link[data-name="twbs"]').attr('href'), 'https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css');
     test.equal($('link[data-name="twbs"]').attr('rel'), 'stylesheet');
 
-    test.equal($('script[data-name="twbs"]').attr('src'), 'https://maxcdn.bootstrapcdn.com/bootstrap/2.2.0/js/bootstrap.min.js');
+    test.equal($('script[data-name="twbs"]').attr('src'), 'https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js');
     // Check defaults
     test.equal($('link[data-name="canonical"]').attr('href'), Meteor.absoluteUrl((FlowRouter.current().path || document.location.pathname).replace(/^\//g, '')));
     test.equal($('link[data-name="canonical"]').attr('rel'), 'canonical');
@@ -298,7 +298,7 @@ Tinytest.addAsync('404 via FlowRouter.notFound', function (test, next) {
     test.equal($('link[data-name="twbs"]').attr('href'), undefined);
     test.equal($('link[data-name="twbs"]').attr('rel'), undefined);
 
-    test.equal($('script[data-name="twbs"]').attr('src'), 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js');
+    test.equal($('script[data-name="twbs"]').attr('src'), 'https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js');
 
     test.equal($('link[data-name="canonical"]').attr('href'), Meteor.absoluteUrl((FlowRouter.current().path || document.location.pathname).replace(/^\//g, '')));
     test.equal($('link[data-name="canonical"]').attr('rel'), 'canonical');
