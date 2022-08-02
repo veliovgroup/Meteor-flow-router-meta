@@ -6,7 +6,7 @@
 
 # Reactive meta tags, JavaScript and CSSs
 
-Change meta tags on the fly within [`flow-router-extra`](https://github.com/VeliovGroup/flow-router). This package can create `meta` tags, `script` and `link` tags as well.
+Change meta tags on the fly within [`flow-router-extra`](https://github.com/veliovgroup/flow-router). This package can create `meta` tags, `script` and `link` tags as well.
 
 ## Features:
 
@@ -26,15 +26,15 @@ __Note__: this package implies [ostrio:flow-router-title](https://atmospherejs.c
 
 ## ToC:
 
-- [Installation](https://github.com/VeliovGroup/Meteor-flow-router-meta#install)
-- [Demo application](https://github.com/VeliovGroup/Meteor-flow-router-meta#demo-application)
-- [Set CSS and JS per route](https://github.com/VeliovGroup/Meteor-flow-router-meta#set-css-and-js-per-route)
-- [Set `application/ld+json`](https://github.com/VeliovGroup/Meteor-flow-router-meta#ldjson)
-- [Use function as value](https://github.com/VeliovGroup/Meteor-flow-router-meta#use-function-as-value)
-- [Use function's context](https://github.com/VeliovGroup/Meteor-flow-router-meta#use-function-context)
-- [Bootstrap configuration](https://github.com/VeliovGroup/Meteor-flow-router-meta#bootstrap-configuration)
-- [Other examples](https://github.com/VeliovGroup/Meteor-flow-router-meta#other-examples)
-- [Support this project](https://github.com/VeliovGroup/Meteor-flow-router-meta#support-this-project)
+- [Installation](https://github.com/veliovgroup/Meteor-flow-router-meta#install)
+- [Demo application](https://github.com/veliovgroup/Meteor-flow-router-meta#demo-application)
+- [Set CSS and JS per route](https://github.com/veliovgroup/Meteor-flow-router-meta#set-css-and-js-per-route)
+- [Set `application/ld+json`](https://github.com/veliovgroup/Meteor-flow-router-meta#ldjson)
+- [Use function as value](https://github.com/veliovgroup/Meteor-flow-router-meta#use-function-as-value)
+- [Use function's context](https://github.com/veliovgroup/Meteor-flow-router-meta#use-function-context)
+- [Bootstrap configuration](https://github.com/veliovgroup/Meteor-flow-router-meta#bootstrap-configuration)
+- [Other examples](https://github.com/veliovgroup/Meteor-flow-router-meta#other-examples)
+- [Support this project](https://github.com/veliovgroup/Meteor-flow-router-meta#support-this-project)
 
 ## Install:
 
@@ -44,8 +44,8 @@ meteor add ostrio:flow-router-meta
 
 ## Demos / Tests:
 
-- [Demo source](https://github.com/VeliovGroup/Meteor-flow-router-meta/tree/master/demo)
-- [Tests](https://github.com/VeliovGroup/Meteor-flow-router-meta/tree/master/tests.js)
+- [Demo source](https://github.com/veliovgroup/Meteor-flow-router-meta/tree/master/demo)
+- [Tests](https://github.com/veliovgroup/Meteor-flow-router-meta/tree/master/tests.js)
 
 ## ES6 Import:
 
@@ -57,8 +57,8 @@ import { FlowRouterMeta, FlowRouterTitle } from 'meteor/ostrio:flow-router-meta'
 
 ## Related Packages:
 
-- [flow-router-title](https://github.com/VeliovGroup/Meteor-flow-router-title#reactive-page-title) - Change document.title on the fly within FlowRouter-Extra
-- [flow-router-extra](https://github.com/VeliovGroup/flow-router#flowrouter-extra) - Carefully extended FlowRouter
+- [flow-router-title](https://github.com/veliovgroup/Meteor-flow-router-title#reactive-page-title) - Change document.title on the fly within FlowRouter-Extra
+- [flow-router-extra](https://github.com/veliovgroup/flow-router#flowrouter-extra) - Carefully extended FlowRouter
 
 ## Usage:
 
@@ -208,7 +208,7 @@ FlowRouter.route('/routePath', {
 
 ### Use function context:
 
-*Read about* [`data`](https://github.com/VeliovGroup/flow-router/blob/master/docs/hooks/data.md) *hook.*
+*Read about* [`data`](https://github.com/veliovgroup/flow-router/blob/master/docs/hooks/data.md) *hook.*
 
 ```js
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
