@@ -130,116 +130,118 @@ export class FlowRouterMeta {
       return;
     }
 
-    for (let k = this.tags.length - 1; k >= 0; k--) {
-      if (!elements[this.tags[k]]) {
-        elements[this.tags[k]] = {};
-      }
-
-      if (this.router.globals && this.router.globals.length) {
-        for (let i = this.router.globals.length - 1; i >= 0; i--) {
-          if (helpers.has(this.router.globals[i], this.tags[k])) {
-            elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._getValue(this.router.globals[i][this.tags[k]], _context, _arguments));
-          }
-        }
-      }
-
-      if (context.route) {
-        if (context.route.group) {
-          elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._fromParent(context.route.group, this.tags[k], _context, _arguments));
+    setTimeout(() => {
+      for (let k = this.tags.length - 1; k >= 0; k--) {
+        if (!elements[this.tags[k]]) {
+          elements[this.tags[k]] = {};
         }
 
-        if (context.route.options) {
-          if (helpers.has(context.route.options, this.tags[k])) {
-            elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._getValue(context.route.options[this.tags[k]], _context, _arguments));
-          }
-        }
-      }
-
-      for (const key in elements[this.tags[k]]) {
-        let element = head.querySelectorAll(`${this.tags[k]}[data-name="${key}"]`)[0];
-        let _stop   = false;
-
-        if (!element) {
-          element = document.createElement(this.tags[k]);
-          head.appendChild(element);
-        }
-
-        if (helpers.isEmpty(elements[this.tags[k]][key]) || elements[this.tags[k]][key] === null) {
-          head.removeChild(element);
-          _stop = true;
-        }
-
-        if (!_stop) {
-          element.dataset.name = key;
-          let attributes = elements[this.tags[k]][key];
-          if (helpers.isString(attributes)) {
-            switch (this.tags[k]) {
-            case 'meta':
-              attributes = {
-                content: attributes,
-                name: key
-              };
-              break;
-            case 'link':
-              attributes = {
-                href: attributes,
-                rel: key
-              };
-              break;
-            case 'script':
-              attributes = {
-                src: attributes
-              };
-              break;
-            default:
-              attributes = void 0;
-              break;
+        if (this.router.globals && this.router.globals.length) {
+          for (let i = this.router.globals.length - 1; i >= 0; i--) {
+            if (helpers.has(this.router.globals[i], this.tags[k])) {
+              elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._getValue(this.router.globals[i][this.tags[k]], _context, _arguments));
             }
-          } else if (helpers.isObject(attributes)) {
-            let defaultAttrs = {};
-            switch (this.tags[k]) {
-            case 'meta':
-              defaultAttrs = {
-                name: key
-              };
-              break;
-            case 'link':
-              defaultAttrs = {
-                rel: key
-              };
-              break;
-            default:
-              break;
-            }
+          }
+        }
 
-            attributes = Object.assign({}, defaultAttrs, attributes);
+        if (context.route) {
+          if (context.route.group) {
+            elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._fromParent(context.route.group, this.tags[k], _context, _arguments));
           }
 
-          if (attributes) {
-            for (const attrName in attributes) {
-              if (helpers.isString(attributes[attrName])) {
-                if (attrName === 'innerHTML') {
-                  element.innerHTML = attributes[attrName];
-                } else {
-                  element.setAttribute(attrName, attributes[attrName]);
+          if (context.route.options) {
+            if (helpers.has(context.route.options, this.tags[k])) {
+              elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._getValue(context.route.options[this.tags[k]], _context, _arguments));
+            }
+          }
+        }
+
+        for (const key in elements[this.tags[k]]) {
+          let _stop = false;
+          let element = head.querySelectorAll(`${this.tags[k]}[data-name="${key}"]`)[0];
+
+          if (!element) {
+            element = document.createElement(this.tags[k]);
+            head.appendChild(element);
+          }
+
+          if (helpers.isEmpty(elements[this.tags[k]][key]) || elements[this.tags[k]][key] === null) {
+            head.removeChild(element);
+            _stop = true;
+          }
+
+          if (!_stop) {
+            element.dataset.name = key;
+            let attributes = elements[this.tags[k]][key];
+            if (helpers.isString(attributes)) {
+              switch (this.tags[k]) {
+              case 'meta':
+                attributes = {
+                  content: attributes,
+                  name: key
+                };
+                break;
+              case 'link':
+                attributes = {
+                  href: attributes,
+                  rel: key
+                };
+                break;
+              case 'script':
+                attributes = {
+                  src: attributes
+                };
+                break;
+              default:
+                attributes = void 0;
+                break;
+              }
+            } else if (helpers.isObject(attributes)) {
+              let defaultAttrs = {};
+              switch (this.tags[k]) {
+              case 'meta':
+                defaultAttrs = {
+                  name: key
+                };
+                break;
+              case 'link':
+                defaultAttrs = {
+                  rel: key
+                };
+                break;
+              default:
+                break;
+              }
+
+              attributes = Object.assign({}, defaultAttrs, attributes);
+            }
+
+            if (attributes) {
+              for (const attrName in attributes) {
+                if (helpers.isString(attributes[attrName])) {
+                  if (attrName === 'innerHTML') {
+                    element.innerHTML = attributes[attrName];
+                  } else {
+                    element.setAttribute(attrName, attributes[attrName]);
+                  }
                 }
               }
-            }
 
-            if (element.attributes && element.attributes.length) {
-              for (let i = element.attributes.length - 1; i >= 0; i--) {
-                if (element.attributes[i].name !== 'data-name' && !helpers.has(attributes, element.attributes[i].name)) {
-                  element.removeAttribute(element.attributes[i].name);
+              if (element.attributes && element.attributes.length) {
+                for (let i = element.attributes.length - 1; i >= 0; i--) {
+                  if (element.attributes[i].name !== 'data-name' && !helpers.has(attributes, element.attributes[i].name)) {
+                    element.removeAttribute(element.attributes[i].name);
+                  }
                 }
               }
-            }
 
-            if (!element.attributes.length || !element.attributes.length) {
-              head.removeChild(element);
+              if (!element.attributes.length || !element.attributes.length) {
+                head.removeChild(element);
+              }
             }
           }
         }
       }
-    }
+    }, 5);
   }
 }

@@ -22,8 +22,6 @@ Various ways to set `meta`, `script` and `link` tags, ordered by prioritization:
 - `FlowRouter.globals`
 - Head template `<meta/>`, `<link/>`, `<script/>` tags [*might be overridden by any above*]
 
-__Note__: this package implies [ostrio:flow-router-title](https://atmospherejs.com/ostrio/flow-router-title) package.
-
 ## ToC:
 
 - [Installation](https://github.com/veliovgroup/Meteor-flow-router-meta#install)
@@ -41,6 +39,8 @@ __Note__: this package implies [ostrio:flow-router-title](https://atmospherejs.c
 ```shell
 meteor add ostrio:flow-router-meta
 ```
+
+__Note__: this package implies [`ostrio:flow-router-title`](https://atmospherejs.com/ostrio/flow-router-title) package.
 
 ## Demos / Tests:
 
