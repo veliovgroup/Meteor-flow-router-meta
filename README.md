@@ -6,7 +6,7 @@
 
 # Reactive meta tags, JavaScript and CSSs
 
-Change meta tags on the fly within [`flow-router-extra`](https://github.com/veliovgroup/flow-router). This package can create `meta` tags, `script` and `link` tags as well.
+Change meta tags on the fly in [Meteor.js](https://docs.meteor.com/?utm_source=dr.dimitru&utm_medium=online&utm_campaign=Q2-2022-Ambassadors) apps via [`flow-router-extra`](https://github.com/veliovgroup/flow-router) API. This package can create `meta` tags, `script` and `link` tags as well.
 
 ## Features:
 
