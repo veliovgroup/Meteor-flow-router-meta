@@ -2,7 +2,7 @@ export { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';
 
 const helpers = {
   isObject(obj) {
-    if (this.isArray(obj) || this.isFunction(obj)) {
+    if (this.isArray(obj) || this.isFunction(obj) || obj === null) {
       return false;
     }
     return obj === Object(obj);
@@ -47,14 +47,15 @@ const helpers = {
 
 const _helpers = ['String', 'Date'];
 for (let i = 0; i < _helpers.length; i++) {
-  helpers['is' + _helpers[i]] = function (obj) {
-    return Object.prototype.toString.call(obj) === '[object ' + _helpers[i] + ']';
+  helpers[`is${_helpers[i]}`] = function (obj) {
+    return Object.prototype.toString.call(obj) === `[object ${_helpers[i]}]`;
   };
 }
 
 export class FlowRouterMeta {
   constructor(router) {
     const self  = this;
+    this.metaSetTimer = false;
     this.router = router;
     this.router.triggers.enter([this.metaHandler.bind(this)]);
     this.tags = ['link', 'meta', 'script'];
@@ -130,7 +131,12 @@ export class FlowRouterMeta {
       return;
     }
 
-    setTimeout(() => {
+    if (this.metaSetTimer) {
+      clearTimeout(this.metaSetTimer);
+    }
+    this.metaSetTimer = setTimeout(() => {
+      this.metaSetTimer = false;
+
       for (let k = this.tags.length - 1; k >= 0; k--) {
         if (!elements[this.tags[k]]) {
           elements[this.tags[k]] = {};

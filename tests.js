@@ -8,6 +8,8 @@ if (Meteor.isServer) {
   return;
 }
 
+window.history.replaceState(null, '', '/');
+
 FlowRouter.globals.push({
   title: 'Default title'
 });
