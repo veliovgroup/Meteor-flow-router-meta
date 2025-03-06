@@ -118,7 +118,7 @@ export class FlowRouterMeta {
     return result;
   }
 
-  metaHandler(context, redirect, stop, data) {
+  metaHandler(context, _redirect, _stop, data) {
     let elements = {};
     const _context = Object.assign({}, {
       query: context.queryParams,
