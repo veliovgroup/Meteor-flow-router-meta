@@ -92,23 +92,28 @@ export class FlowRouterMeta {
   }
 
   _getValue(prop, _context, _arguments) {
-    let result = {};
     if (helpers.isFunction(prop)) {
-      result = this._getValue(prop.apply(_context, _arguments), _context, _arguments);
-    } else if (helpers.isString(prop)) {
-      result = prop;
-    } else if (helpers.isArray(prop)) {
-      for (let i = prop.length - 1; i >= 0; i--) {
-        result[i] = this._getValue(prop[i], _context, _arguments, i);
-      }
-    } else if (helpers.isObject(prop)) {
-      Object.keys(prop).forEach((key) => {
-        result[key] = this._getValue(prop[key], _context, _arguments, key);
-      });
-    } else if (prop === null) {
-      result = null;
+      return this._getValue(prop.apply(_context, _arguments), _context, _arguments);
     }
-    return result;
+    if (helpers.isString(prop)) {
+      return prop;
+    }
+    if (helpers.isArray(prop)) {
+      return prop.reduce((acc, propVal, index) => {
+        acc[index] = this._getValue(propVal, _context, _arguments);
+        return acc;
+      }, {});
+    }
+    if (helpers.isObject(prop)) {
+      return Object.keys(prop).reduce((acc, key) => {
+        acc[key] = this._getValue(prop[key], _context, _arguments);
+        return acc;
+      }, {});
+    }
+    if (prop === null) {
+      return null;
+    }
+    return {};
   }
 
   metaHandler(context, _redirect, _stop, data) {
