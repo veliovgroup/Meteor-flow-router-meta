@@ -1,6 +1,6 @@
-import { $ }          from 'meteor/jquery';
-import { Meteor }     from 'meteor/meteor';
-import { Random }     from 'meteor/random';
+import { $ } from 'meteor/jquery';
+import { Meteor } from 'meteor/meteor';
+import { Random } from 'meteor/random';
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 import { FlowRouterMeta, FlowRouterTitle } from './flow-router-meta.js';
 

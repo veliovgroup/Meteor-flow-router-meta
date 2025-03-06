@@ -23,20 +23,20 @@ Various ways to set `meta`, `script` and `link` tags, *ordered by priority*:
 
 ## ToC
 
-- [Installation](https://github.com/veliovgroup/Meteor-flow-router-meta#install)
-- [Demos](https://github.com/veliovgroup/Meteor-flow-router-meta#demos)
+- [Installation](#install)
+- [Demos](#demos)
 - [ES6 Import](#es6-import)
 - [Related Packages](#related-packages)
 - [API](#api)
 - [Usage](#usage)
-  - [Basic examples](https://github.com/veliovgroup/Meteor-flow-router-meta#basic-examples)
-  - [Set `application/ld+json`](https://github.com/veliovgroup/Meteor-flow-router-meta#ldjson)
-  - [Use function as value](https://github.com/veliovgroup/Meteor-flow-router-meta#use-function-as-value)
-  - [Use function's context](https://github.com/veliovgroup/Meteor-flow-router-meta#use-function-context)
-  - [Set CSS and JS per route](https://github.com/veliovgroup/Meteor-flow-router-meta#set-css-and-js-per-route)
-  - [Bootstrap configuration](https://github.com/veliovgroup/Meteor-flow-router-meta#bootstrap-configuration)
+  - [Basic examples](#basic-examples)
+  - [Set `application/ld+json`](#ldjson)
+  - [Use function as value](#use-function-as-value)
+  - [Use function's context](#use-function-context)
+  - [Set CSS and JS per route](#set-css-and-js-per-route)
+  - [Bootstrap configuration](#bootstrap-configuration)
 - [Running tests](#running-tests)
-- [Support this project](https://github.com/veliovgroup/Meteor-flow-router-meta#support-this-project)
+- [Support this project](#support-this-project)
 
 ## Install
 
@@ -62,6 +62,8 @@ import { FlowRouterMeta, FlowRouterTitle } from 'meteor/ostrio:flow-router-meta'
 ```
 
 ## Related Packages
+
+`flow-router-meta` performs the best when used with the next packages:
 
 - [flow-router-title](https://github.com/veliovgroup/Meteor-flow-router-title#reactive-page-title) - Change document.title on the fly within FlowRouter-Extra
 - [flow-router-extra](https://github.com/veliovgroup/flow-router#flowrouter-extra) - Carefully extended FlowRouter
@@ -350,7 +352,7 @@ group.route('/groupPage1', {
 
 ### Bootstrap configuration
 
-Push default `meta` and `link` tags to `FlowRouter.globals`
+Push default `meta`, `link`, or `script` tags to `FlowRouter.globals`
 
 ```js
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
