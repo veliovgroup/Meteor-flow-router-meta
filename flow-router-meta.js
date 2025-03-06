@@ -1,18 +1,52 @@
 export { FlowRouterTitle } from 'meteor/ostrio:flow-router-title';
 
+/**
+ * Helper functions for type and value checks.
+ */
 const helpers = {
+  /**
+   * Checks if the provided value is a plain object.
+   *
+   * @param {*} obj - The value to check.
+   * @returns {boolean} True if obj is a plain object, false otherwise.
+   */
   isObject(obj) {
     if (obj === null || this.isArray(obj) || this.isFunction(obj)) {
       return false;
     }
     return obj === Object(obj);
   },
+
+  /**
+   * Checks if the provided value is an array.
+   *
+   * @param {*} obj - The value to check.
+   * @returns {boolean} True if obj is an array, false otherwise.
+   */
   isArray(obj) {
     return Array.isArray(obj);
   },
+
+  /**
+   * Checks if the provided value is a function.
+   *
+   * @param {*} obj - The value to check.
+   * @returns {boolean} True if obj is a function, false otherwise.
+   */
   isFunction(obj) {
     return typeof obj === 'function';
   },
+
+  /**
+   * Checks if the provided value is considered empty.
+   *
+   * For objects, it checks if there are any own properties.
+   * For arrays and strings, it checks the length.
+   * Dates are never considered empty.
+   *
+   * @param {*} obj - The value to check.
+   * @returns {boolean} True if obj is empty, false otherwise.
+   */
   isEmpty(obj) {
     if (this.isDate(obj)) {
       return false;
@@ -25,24 +59,54 @@ const helpers = {
     }
     return false;
   },
+
+  /**
+   * Checks if the object has a specified property.
+   *
+   * @param {Object} obj - The object to check.
+   * @param {(string|Array)} path - The property name (currently supports only string keys).
+   * @returns {boolean} True if the property exists on the object, false otherwise.
+   */
   has(obj, path) {
     if (!this.isObject(obj)) {
       return false;
     }
     if (!this.isArray(path)) {
-      return this.isObject(obj) && Object.prototype.hasOwnProperty.call(obj, path);
+      return Object.prototype.hasOwnProperty.call(obj, path);
     }
     return false;
   },
+
+  /**
+   * Checks if the provided value is a string.
+   *
+   * @param {*} obj - The value to check.
+   * @returns {boolean} True if obj is a string, false otherwise.
+   */
   isString(obj) {
     return Object.prototype.toString.call(obj) === '[object String]';
   },
+
+  /**
+   * Checks if the provided value is a Date.
+   *
+   * @param {*} obj - The value to check.
+   * @returns {boolean} True if obj is a Date, false otherwise.
+   */
   isDate(obj) {
     return Object.prototype.toString.call(obj) === '[object Date]';
   }
 };
 
+/**
+ * Class representing meta tag handling for FlowRouter.
+ */
 export class FlowRouterMeta {
+  /**
+   * Creates an instance of FlowRouterMeta.
+   *
+   * @param {FlowRouter|Router} router - The FlowRouter or Router instance.
+   */
   constructor(router) {
     const self = this;
     this.metaSetTimer = null;
@@ -78,6 +142,16 @@ export class FlowRouterMeta {
     };
   }
 
+  /**
+   * Recursively retrieves and merges tag options from parent groups.
+   *
+   * @param {Object} group - The group object.
+   * @param {string} type - The tag type (e.g., 'meta', 'link', 'script').
+   * @param {Object} _context - The context object.
+   * @param {Array} _arguments - The arguments array.
+   * @param {Object} [result={}] - The accumulator for merged values.
+   * @returns {Object} The merged tag options.
+   */
   _fromParent(group, type, _context, _arguments, result = {}) {
     if (group) {
       if (group.options && helpers.has(group.options, type)) {
@@ -90,6 +164,17 @@ export class FlowRouterMeta {
     return result;
   }
 
+  /**
+   * Recursively resolves the value of a property.
+   *
+   * If the property is a function, it is executed with the provided context and arguments.
+   * If it's an array or object, each element or property is recursively resolved.
+   *
+   * @param {*} prop - The property to resolve. Can be a function, string, array, or object.
+   * @param {Object} _context - The context for function execution.
+   * @param {Array} _arguments - The arguments to pass if prop is a function.
+   * @returns {*} The resolved value.
+   */
   _getValue(prop, _context, _arguments) {
     if (helpers.isFunction(prop)) {
       return this._getValue(prop.apply(_context, _arguments), _context, _arguments);
@@ -112,9 +197,17 @@ export class FlowRouterMeta {
     if (prop === null) {
       return null;
     }
-    return {};
+    return prop;
   }
 
+  /**
+   * Constructs attributes for a tag based on its type.
+   *
+   * @param {string} tagType - The tag type (e.g., 'meta', 'link', 'script').
+   * @param {(string|Object)} attrs - The attributes as a string or object.
+   * @param {string} key - The key to use for attribute assignment.
+   * @returns {(Object|undefined)} The attributes object, or undefined if not applicable.
+   */
   _getAttrs(tagType, attrs, key) {
     if (!attrs || (!helpers.isString(attrs) && !helpers.isObject(attrs))) {
       return attrs;
@@ -149,6 +242,16 @@ export class FlowRouterMeta {
     }
   }
 
+  /**
+   * Sets meta tags in the document head based on the current route context.
+   *
+   * Merges global, group, and route-specific tag options, then updates
+   * the corresponding DOM elements.
+   *
+   * @param {HTMLElement} head - The document head element.
+   * @param {Object} context - The current route context.
+   * @param {*} data - Additional data.
+   */
   _setTags(head, context, data) {
     this.metaSetTimer = null;
 
@@ -227,6 +330,17 @@ export class FlowRouterMeta {
     }
   }
 
+  /**
+   * Handles meta tag updates when a route is entered.
+   *
+   * Schedules the update of meta tags in the document head based on the
+   * provided context.
+   *
+   * @param {Object} context - The current route context.
+   * @param {*} _redirect - Unused parameter for redirection.
+   * @param {*} _stop - Unused parameter for stopping route processing.
+   * @param {*} data - `data` returned from `data()` hook.
+   */
   metaHandler(context, _redirect, _stop, data) {
     const head = document.getElementsByTagName('head')[0];
     if (!head) {
