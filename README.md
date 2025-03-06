@@ -3,9 +3,9 @@
 <a href="https://ostr.io/info/built-by-developers-for-developers?ref=github-flowroutermeta-repo-top"><img src="https://ostr.io/apple-touch-icon-60x60.png" height="20"></a>
 <a href="https://meteor-files.com/?ref=github-flowroutermeta-repo-top"><img src="https://meteor-files.com/apple-touch-icon-60x60.png" height="20"></a>
 
-# Reactive meta tags, JavaScript and CSSs
+# Reactive `meta`, `link`, and `script` tags
 
-Change meta tags on the fly in [Meteor.js](https://docs.meteor.com/?utm_source=dr.dimitru&utm_medium=online&utm_campaign=Q2-2022-Ambassadors) apps via [`flow-router-extra`](https://github.com/veliovgroup/flow-router) API. This package can create `meta` tags, `script` and `link` tags as well.
+Change meta tags on the fly in [Meteor.js](https://docs.meteor.com/?utm_source=dr.dimitru&utm_medium=online&utm_campaign=Q2-2022-Ambassadors) apps via [`flow-router-extra`](https://github.com/veliovgroup/flow-router) API. This package manages `meta` tags, `script` and `link` via simple router object definitions.
 
 ## Features:
 
@@ -14,39 +14,46 @@ Change meta tags on the fly in [Meteor.js](https://docs.meteor.com/?utm_source=d
 - 🎛 Per route, per group, and default (*all routes*) `script`s;
 - 🎛 Per route, per group, and default (*all routes*) `link`, like CSS files.
 
-Various ways to set `meta`, `script` and `link` tags, ordered by prioritization:
+Various ways to set `meta`, `script` and `link` tags, *ordered by priority*:
 
 - `FlowRouter.route()` [*overrides all below*]
 - `FlowRouter.group()`
 - `FlowRouter.globals`
-- Head template `<meta/>`, `<link/>`, `<script/>` tags [*might be overridden by any above*]
+- Head template `<meta/>`, `<link/>`, `<script/>` tags [*superseded by any above*]
 
-## ToC:
+## ToC
 
 - [Installation](https://github.com/veliovgroup/Meteor-flow-router-meta#install)
-- [Demo application](https://github.com/veliovgroup/Meteor-flow-router-meta#demo-application)
-- [Set CSS and JS per route](https://github.com/veliovgroup/Meteor-flow-router-meta#set-css-and-js-per-route)
-- [Set `application/ld+json`](https://github.com/veliovgroup/Meteor-flow-router-meta#ldjson)
-- [Use function as value](https://github.com/veliovgroup/Meteor-flow-router-meta#use-function-as-value)
-- [Use function's context](https://github.com/veliovgroup/Meteor-flow-router-meta#use-function-context)
-- [Bootstrap configuration](https://github.com/veliovgroup/Meteor-flow-router-meta#bootstrap-configuration)
-- [Other examples](https://github.com/veliovgroup/Meteor-flow-router-meta#other-examples)
+- [Demos](https://github.com/veliovgroup/Meteor-flow-router-meta#demos)
+- [ES6 Import](#es6-import)
+- [Related Packages](#related-packages)
+- [API](#api)
+- [Usage](#usage)
+  - [Basic examples](https://github.com/veliovgroup/Meteor-flow-router-meta#basic-examples)
+  - [Set `application/ld+json`](https://github.com/veliovgroup/Meteor-flow-router-meta#ldjson)
+  - [Use function as value](https://github.com/veliovgroup/Meteor-flow-router-meta#use-function-as-value)
+  - [Use function's context](https://github.com/veliovgroup/Meteor-flow-router-meta#use-function-context)
+  - [Set CSS and JS per route](https://github.com/veliovgroup/Meteor-flow-router-meta#set-css-and-js-per-route)
+  - [Bootstrap configuration](https://github.com/veliovgroup/Meteor-flow-router-meta#bootstrap-configuration)
+- [Running tests](#running-tests)
 - [Support this project](https://github.com/veliovgroup/Meteor-flow-router-meta#support-this-project)
 
-## Install:
+## Install
 
 ```shell
 meteor add ostrio:flow-router-meta
 ```
 
-__Note__: this package implies [`ostrio:flow-router-title`](https://atmospherejs.com/ostrio/flow-router-title) package.
+> [!NOTE]
+> This package implies [`ostrio:flow-router-title`](https://atmospherejs.com/ostrio/flow-router-title) package.
 
-## Demos / Tests:
+## Demos
 
+- [Real app usage example](https://github.com/veliovgroup/meteor-files-website/blob/master/imports/client/router/router.js#L18)
 - [Demo source](https://github.com/veliovgroup/Meteor-flow-router-meta/tree/master/demo)
 - [Tests](https://github.com/veliovgroup/Meteor-flow-router-meta/tree/master/tests.js)
 
-## ES6 Import:
+## ES6 Import
 
 ```js
 import { FlowRouterMeta } from 'meteor/ostrio:flow-router-meta';
@@ -54,12 +61,25 @@ import { FlowRouterMeta } from 'meteor/ostrio:flow-router-meta';
 import { FlowRouterMeta, FlowRouterTitle } from 'meteor/ostrio:flow-router-meta';
 ```
 
-## Related Packages:
+## Related Packages
 
 - [flow-router-title](https://github.com/veliovgroup/Meteor-flow-router-title#reactive-page-title) - Change document.title on the fly within FlowRouter-Extra
 - [flow-router-extra](https://github.com/veliovgroup/flow-router#flowrouter-extra) - Carefully extended FlowRouter
 
-## Usage:
+## API
+
+- `new FlowRouterMeta(FlowRouter)` — The main `FlowRouterMeta` constructor that accepts `FlowRouter` as the only argument
+
+After `new FlowRouterMeta(FlowRouter)` instance is initiated it extends `FlowRouter.router()` and `FlowRouter.group()` methods and `FlowRouter.globals` with support of:
+
+- `meta: Object` — Object with meta-tags
+- `meta: function(params, qs, data) => object` — Method returning object with meta-tags
+- `link: Object` — Object with link-tags
+- `link: function(params, qs, data) => object` — Method returning object with link-tags
+- `script: Object` — Object with script-tags
+- `script: function(params, qs, data) => object` — Method returning object with script-tags
+
+## Usage
 
 You need to initialize `FlowRouterMeta` and `FlowRouterTitle` classes by passing `FlowRouter` object. Right after creating all your routes:
 
@@ -77,7 +97,188 @@ new FlowRouterMeta(FlowRouter);
 new FlowRouterTitle(FlowRouter);
 ```
 
-### Set CSS and JS per route:
+### Basic examples
+
+Set only `name` and `content` attributes on `meta` tag:
+
+```js
+FlowRouter.route('/routePath', {
+  name: 'routeName',
+  meta: {
+    name: 'content'
+  }
+});
+// Will generate
+// <meta name="name" content="content">
+
+FlowRouter.route('/routePath', {
+  name: 'routeName',
+  meta: {
+    'og:title': 'Page title'
+  }
+});
+// Will generate
+// <meta name="og:title" content="Page-title">
+```
+
+Set only `rel` and `href` attributes on `link` tag:
+
+```js
+FlowRouter.route('/routePath', {
+  name: 'routeName',
+  link: {
+    canonical: 'http://example.com'
+  }
+});
+// Will generate
+// <link rel="canonical" href="http://example.com">
+
+FlowRouter.route('/routePath', {
+  name: 'routeName',
+  link: {
+    rel: 'canonical',
+    href: 'http://example.com'
+  }
+});
+// Will generate
+// <link rel="canonical" href="http://example.com">
+```
+
+Set multiple attributes on `meta` tag:
+
+```js
+FlowRouter.route('/routePath', {
+  name: 'routeName',
+  meta: {
+    uniqueName: {
+      name: 'name',
+      content: 'value',
+      property: 'og:name',
+      itemprop: 'name'
+    }
+  }
+});
+// Will generate
+// <meta name="name" content="value" property="og:name" itemprop="name">
+```
+
+Set multiple attributes on `link` tag:
+
+```js
+FlowRouter.route('/routePath', {
+  name: 'routeName',
+  link: {
+    uniqueName: {
+      rel: 'name',
+      sizes: 'value',
+      href: 'http://value',
+      type: 'value-type'
+    }
+  }
+});
+// Will generate
+// <link rel="name" sizes="value" href="http://value" type="value-type">
+```
+
+### ldjson
+
+This method uses special property named `innerHTML` which set script's content instead of attribute. This method and property can be used in the any other case when you need to set script's contents.
+
+```js
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+
+FlowRouter.route('/fourthPage', {
+  name: 'fourthPage',
+  title: 'Fourth Page title',
+  script: {
+    ldjson: {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'http://schema.org/',
+        '@type': 'Recipe',
+        name: 'Grandma\'s Holiday Apple Pie',
+        author: 'Elaine Smith',
+        image: 'http://images.edge-generalmills.com/56459281-6fe6-4d9d-984f-385c9488d824.jpg',
+        description: 'A classic apple pie.',
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: '4',
+          reviewCount: '276',
+          bestRating: '5',
+          worstRating: '1'
+        }
+      })
+    }
+  },
+  action() { /*...*/ }
+});
+```
+
+### Use function as value
+
+Properties of `meta`, `link`, and `script` tags can be a function that will execute upon navigation
+
+```js
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+
+FlowRouter.route('/routePath', {
+  name: 'routeName',
+  meta: {
+    url: {
+      property: 'og:url',
+      itemprop: 'url',
+      content() {
+        return document.location.href;
+      }
+    }
+  },
+  link: {
+    canonical() {
+      return document.location.href;
+    }
+  }
+});
+```
+
+### Use function context
+
+`data` can get passed from `data()` hook. *Read about [`data`](https://github.com/veliovgroup/flow-router/blob/master/docs/hooks/data.md) hook.*
+
+```js
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+
+FlowRouter.route('/post/:_id', {
+  name: 'post',
+  waitOn(params) {
+    return [Meteor.subscribe('post', params._id)];
+  },
+  async data(params) {
+    return await Collection.Posts.findOneAsync(params._id);
+  },
+  meta: {
+    keywords: {
+      name: 'keywords',
+      itemprop: 'keywords',
+      content(params, query, data) {
+        return data?.keywords || 'default, key, words';
+      }
+    }
+  },
+  title(params, query, data) {
+    if (data) {
+      return data.title;
+    }
+    return '404: Page not found';
+  }
+});
+```
+
+### Set CSS and JS per route
+
+Load CSS and JS files on per route and per group basis.
+
+> [!IMPORTANT]
+> Once CSS or JS is loaded there's no way to "unload" its code. This package will remove tags from head when navigated to other routes, but contents of loaded JS and CSS files will remain in browser's memory
 
 ```js
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
@@ -147,159 +348,14 @@ group.route('/groupPage1', {
 });
 ```
 
-### ldjson:
+### Bootstrap configuration
 
-This method uses special property named `innerHTML` which set script's content instead of attribute. This method and property can be used in the any other case when you need to set script's contents.
-
-```js
-import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
-
-FlowRouter.route('/fourthPage', {
-  name: 'fourthPage',
-  title: 'Fourth Page title',
-  script: {
-    ldjson: {
-      type: 'application/ld+json',
-      innerHTML: JSON.stringify({
-        '@context': 'http://schema.org/',
-        '@type': 'Recipe',
-        name: 'Grandma\'s Holiday Apple Pie',
-        author: 'Elaine Smith',
-        image: 'http://images.edge-generalmills.com/56459281-6fe6-4d9d-984f-385c9488d824.jpg',
-        description: 'A classic apple pie.',
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: '4',
-          reviewCount: '276',
-          bestRating: '5',
-          worstRating: '1'
-        }
-      })
-    }
-  },
-  action() { /*...*/ }
-});
-```
-
-### Use function as value:
+Push default `meta` and `link` tags to `FlowRouter.globals`
 
 ```js
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
-FlowRouter.route('/routePath', {
-  name: 'routeName',
-  meta: {
-    url: {
-      property: 'og:url',
-      itemprop: 'url',
-      content() {
-        return document.location.href;
-      }
-    }
-  },
-  link: {
-    canonical() {
-      return document.location.href;
-    }
-  }
-});
-```
-
-### Use function context:
-
-*Read about* [`data`](https://github.com/veliovgroup/flow-router/blob/master/docs/hooks/data.md) *hook.*
-
-```js
-import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
-
-FlowRouter.route('/post/:_id', {
-  name: 'post',
-  waitOn(params) {
-    return [Meteor.subscribe('post', params._id)];
-  },
-  data(params) {
-    return Collection.Posts.findOne(params._id);
-  },
-  meta: {
-    keywords: {
-      name: 'keywords',
-      itemprop: 'keywords',
-      content(params, query, data = {}) {
-        return data.keywords;
-      }
-    }
-  },
-  title(params, query, data = {}) {
-    if (data) {
-      return data.title;
-    }
-    return '404: Page not found';
-  }
-});
-```
-
-### Other examples:
-
-Set only `name` and `content` attributes on `meta` tag:
-
-```js
-FlowRouter.route('/routePath', {
-  name: 'routeName',
-  meta: {
-    name: 'content'
-  }
-});
-```
-
-Set only `rel` and `href` attributes on `link` tag:
-
-```js
-FlowRouter.route('/routePath', {
-  name: 'routeName',
-  link: {
-    rel: 'http://example.com'
-  }
-});
-```
-
-Set multiple attributes on `meta` tag:
-
-```js
-FlowRouter.route('/routePath', {
-  name: 'routeName',
-  meta: {
-    uniqueName: {
-      name: 'name',
-      content: 'value',
-      property: 'og:name',
-      itemprop: 'name'
-    }
-  }
-});
-```
-
-Set multiple attributes on `link` tag:
-
-```js
-FlowRouter.route('/routePath', {
-  name: 'routeName',
-  link: {
-    uniqueName: {
-      rel: 'name',
-      sizes: 'value',
-      href: 'value',
-      type: 'value'
-    }
-  }
-});
-```
-
-### Bootstrap configuration:
-
-```js
-import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
-
-FlowRouter.route('/routePath', {
+FlowRouter.globals.push({
   name: 'routeName',
   meta: {
     // <meta charset="UTF-8">
