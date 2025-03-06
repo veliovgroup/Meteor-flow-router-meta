@@ -115,6 +115,40 @@ export class FlowRouterMeta {
     return {};
   }
 
+  _getAttrs(tagType, attrs, key) {
+    if (!attrs || (!helpers.isString(attrs) && !helpers.isObject(attrs))) {
+      return attrs;
+    }
+
+    switch (tagType) {
+    case 'meta':
+      if (helpers.isObject(attrs)) {
+        return { name: key, ...attrs };
+      }
+      return {
+        content: attrs,
+        name: key
+      };
+    case 'link':
+      if (helpers.isObject(attrs)) {
+        return { rel: key, ...attrs };
+      }
+      return {
+        href: attrs,
+        rel: key
+      };
+    case 'script':
+      if (helpers.isObject(attrs)) {
+        return attrs;
+      }
+      return {
+        src: attrs
+      };
+    default:
+      return void 0;
+    }
+  }
+
   _setTags(head, context, data) {
     this.metaSetTimer = null;
 
@@ -122,35 +156,35 @@ export class FlowRouterMeta {
     const _context = Object.assign({}, { query: context.queryParams, params: {} }, context);
     const _arguments = [context.params, context.queryParams, data];
 
-    for (let k = this.tags.length - 1; k >= 0; k--) {
-      if (!elements[this.tags[k]]) {
-        elements[this.tags[k]] = {};
+    for (let tagType of this.tags) {
+      if (!elements[tagType]) {
+        elements[tagType] = {};
       }
 
       if (this.router.globals && this.router.globals.length) {
         for (let i = this.router.globals.length - 1; i >= 0; i--) {
-          if (helpers.has(this.router.globals[i], this.tags[k])) {
-            elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._getValue(this.router.globals[i][this.tags[k]], _context, _arguments));
+          if (helpers.has(this.router.globals[i], tagType)) {
+            elements[tagType] = Object.assign({}, elements[tagType], this._getValue(this.router.globals[i][tagType], _context, _arguments));
           }
         }
       }
 
       if (context.route) {
         if (context.route.group) {
-          elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._fromParent(context.route.group, this.tags[k], _context, _arguments));
+          elements[tagType] = Object.assign({}, elements[tagType], this._fromParent(context.route.group, tagType, _context, _arguments));
         }
 
         if (context.route.options) {
-          if (helpers.has(context.route.options, this.tags[k])) {
-            elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._getValue(context.route.options[this.tags[k]], _context, _arguments));
+          if (helpers.has(context.route.options, tagType)) {
+            elements[tagType] = Object.assign({}, elements[tagType], this._getValue(context.route.options[tagType], _context, _arguments));
           }
         }
       }
 
       // eslint-disable-next-line guard-for-in
-      for (const key in elements[this.tags[k]]) {
-        let element = head.querySelectorAll(`${this.tags[k]}[data-name="${key}"]`)[0];
-        if (elements[this.tags[k]][key] === null || helpers.isEmpty(elements[this.tags[k]][key])) {
+      for (const key in elements[tagType]) {
+        let element = head.querySelectorAll(`${tagType}[data-name="${key}"]`)[0];
+        if (elements[tagType][key] === null || helpers.isEmpty(elements[tagType][key])) {
           if (element) {
             head.removeChild(element);
           }
@@ -158,55 +192,12 @@ export class FlowRouterMeta {
         }
 
         if (!element) {
-          element = document.createElement(this.tags[k]);
+          element = document.createElement(tagType);
           head.appendChild(element);
         }
 
         element.dataset.name = key;
-        let attributes = elements[this.tags[k]][key];
-        if (helpers.isString(attributes)) {
-          switch (this.tags[k]) {
-          case 'meta':
-            attributes = {
-              content: attributes,
-              name: key
-            };
-            break;
-          case 'link':
-            attributes = {
-              href: attributes,
-              rel: key
-            };
-            break;
-          case 'script':
-            attributes = {
-              src: attributes
-            };
-            break;
-          default:
-            attributes = void 0;
-            break;
-          }
-        } else if (helpers.isObject(attributes)) {
-          let defaultAttrs = {};
-          switch (this.tags[k]) {
-          case 'meta':
-            defaultAttrs = {
-              name: key
-            };
-            break;
-          case 'link':
-            defaultAttrs = {
-              rel: key
-            };
-            break;
-          default:
-            break;
-          }
-
-          attributes = Object.assign({}, defaultAttrs, attributes);
-        }
-
+        const attributes = this._getAttrs(tagType, elements[tagType][key], key);
         if (!attributes) {
           continue;
         }
