@@ -45,7 +45,7 @@ const helpers = {
 export class FlowRouterMeta {
   constructor(router) {
     const self = this;
-    this.metaSetTimer = false;
+    this.metaSetTimer = null;
     this.router = router;
     this.router.triggers.enter([this.metaHandler.bind(this)]);
     this.tags = ['link', 'meta', 'script'];
@@ -78,14 +78,13 @@ export class FlowRouterMeta {
     };
   }
 
-  _fromParent(group, type, _context, _arguments, _result = {}) {
-    let result = _result;
+  _fromParent(group, type, _context, _arguments, result = {}) {
     if (group) {
       if (group.options && helpers.has(group.options, type)) {
-        result = Object.assign({}, this._getValue(group.options[type], _context, _arguments), result);
+        return Object.assign({}, this._getValue(group.options[type], _context, _arguments), result);
       }
       if (group.parent) {
-        result = this._fromParent(group.parent, type, _context, _arguments, result);
+        return this._fromParent(group.parent, type, _context, _arguments, result);
       }
     }
     return result;
@@ -116,10 +115,128 @@ export class FlowRouterMeta {
     return {};
   }
 
-  metaHandler(context, _redirect, _stop, data) {
-    let elements = {};
+  _setTags(head, context, data) {
+    this.metaSetTimer = null;
+
+    const elements = {};
     const _context = Object.assign({}, { query: context.queryParams, params: {} }, context);
     const _arguments = [context.params, context.queryParams, data];
+
+    for (let k = this.tags.length - 1; k >= 0; k--) {
+      if (!elements[this.tags[k]]) {
+        elements[this.tags[k]] = {};
+      }
+
+      if (this.router.globals && this.router.globals.length) {
+        for (let i = this.router.globals.length - 1; i >= 0; i--) {
+          if (helpers.has(this.router.globals[i], this.tags[k])) {
+            elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._getValue(this.router.globals[i][this.tags[k]], _context, _arguments));
+          }
+        }
+      }
+
+      if (context.route) {
+        if (context.route.group) {
+          elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._fromParent(context.route.group, this.tags[k], _context, _arguments));
+        }
+
+        if (context.route.options) {
+          if (helpers.has(context.route.options, this.tags[k])) {
+            elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._getValue(context.route.options[this.tags[k]], _context, _arguments));
+          }
+        }
+      }
+
+      // eslint-disable-next-line guard-for-in
+      for (const key in elements[this.tags[k]]) {
+        let element = head.querySelectorAll(`${this.tags[k]}[data-name="${key}"]`)[0];
+        if (elements[this.tags[k]][key] === null || helpers.isEmpty(elements[this.tags[k]][key])) {
+          if (element) {
+            head.removeChild(element);
+          }
+          continue;
+        }
+
+        if (!element) {
+          element = document.createElement(this.tags[k]);
+          head.appendChild(element);
+        }
+
+        element.dataset.name = key;
+        let attributes = elements[this.tags[k]][key];
+        if (helpers.isString(attributes)) {
+          switch (this.tags[k]) {
+          case 'meta':
+            attributes = {
+              content: attributes,
+              name: key
+            };
+            break;
+          case 'link':
+            attributes = {
+              href: attributes,
+              rel: key
+            };
+            break;
+          case 'script':
+            attributes = {
+              src: attributes
+            };
+            break;
+          default:
+            attributes = void 0;
+            break;
+          }
+        } else if (helpers.isObject(attributes)) {
+          let defaultAttrs = {};
+          switch (this.tags[k]) {
+          case 'meta':
+            defaultAttrs = {
+              name: key
+            };
+            break;
+          case 'link':
+            defaultAttrs = {
+              rel: key
+            };
+            break;
+          default:
+            break;
+          }
+
+          attributes = Object.assign({}, defaultAttrs, attributes);
+        }
+
+        if (!attributes) {
+          continue;
+        }
+
+        for (const attrName in attributes) {
+          if (helpers.isString(attributes[attrName])) {
+            if (attrName === 'innerHTML') {
+              element.innerHTML = attributes[attrName];
+            } else {
+              element.setAttribute(attrName, attributes[attrName]);
+            }
+          }
+        }
+
+        if (element.attributes && element.attributes.length) {
+          for (let i = element.attributes.length - 1; i >= 0; i--) {
+            if (element.attributes[i].name !== 'data-name' && !helpers.has(attributes, element.attributes[i].name)) {
+              element.removeAttribute(element.attributes[i].name);
+            }
+          }
+        }
+
+        if (element.attributes.length === 0) {
+          head.removeChild(element);
+        }
+      }
+    }
+  }
+
+  metaHandler(context, _redirect, _stop, data) {
     const head = document.getElementsByTagName('head')[0];
     if (!head) {
       return;
@@ -128,120 +245,9 @@ export class FlowRouterMeta {
     if (this.metaSetTimer) {
       clearTimeout(this.metaSetTimer);
     }
+
     this.metaSetTimer = setTimeout(() => {
-      this.metaSetTimer = false;
-
-      for (let k = this.tags.length - 1; k >= 0; k--) {
-        if (!elements[this.tags[k]]) {
-          elements[this.tags[k]] = {};
-        }
-
-        if (this.router.globals && this.router.globals.length) {
-          for (let i = this.router.globals.length - 1; i >= 0; i--) {
-            if (helpers.has(this.router.globals[i], this.tags[k])) {
-              elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._getValue(this.router.globals[i][this.tags[k]], _context, _arguments));
-            }
-          }
-        }
-
-        if (context.route) {
-          if (context.route.group) {
-            elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._fromParent(context.route.group, this.tags[k], _context, _arguments));
-          }
-
-          if (context.route.options) {
-            if (helpers.has(context.route.options, this.tags[k])) {
-              elements[this.tags[k]] = Object.assign({}, elements[this.tags[k]], this._getValue(context.route.options[this.tags[k]], _context, _arguments));
-            }
-          }
-        }
-
-        for (const key in elements[this.tags[k]]) {
-          let shouldStop = false;
-          let element = head.querySelectorAll(`${this.tags[k]}[data-name="${key}"]`)[0];
-
-          if (!element) {
-            element = document.createElement(this.tags[k]);
-            head.appendChild(element);
-          }
-
-          if (helpers.isEmpty(elements[this.tags[k]][key]) || elements[this.tags[k]][key] === null) {
-            head.removeChild(element);
-            shouldStop = true;
-          }
-
-          if (!shouldStop) {
-            element.dataset.name = key;
-            let attributes = elements[this.tags[k]][key];
-            if (helpers.isString(attributes)) {
-              switch (this.tags[k]) {
-              case 'meta':
-                attributes = {
-                  content: attributes,
-                  name: key
-                };
-                break;
-              case 'link':
-                attributes = {
-                  href: attributes,
-                  rel: key
-                };
-                break;
-              case 'script':
-                attributes = {
-                  src: attributes
-                };
-                break;
-              default:
-                attributes = void 0;
-                break;
-              }
-            } else if (helpers.isObject(attributes)) {
-              let defaultAttrs = {};
-              switch (this.tags[k]) {
-              case 'meta':
-                defaultAttrs = {
-                  name: key
-                };
-                break;
-              case 'link':
-                defaultAttrs = {
-                  rel: key
-                };
-                break;
-              default:
-                break;
-              }
-
-              attributes = Object.assign({}, defaultAttrs, attributes);
-            }
-
-            if (attributes) {
-              for (const attrName in attributes) {
-                if (helpers.isString(attributes[attrName])) {
-                  if (attrName === 'innerHTML') {
-                    element.innerHTML = attributes[attrName];
-                  } else {
-                    element.setAttribute(attrName, attributes[attrName]);
-                  }
-                }
-              }
-
-              if (element.attributes && element.attributes.length) {
-                for (let i = element.attributes.length - 1; i >= 0; i--) {
-                  if (element.attributes[i].name !== 'data-name' && !helpers.has(attributes, element.attributes[i].name)) {
-                    element.removeAttribute(element.attributes[i].name);
-                  }
-                }
-              }
-
-              if (element.attributes.length === 0) {
-                head.removeChild(element);
-              }
-            }
-          }
-        }
-      }
+      this._setTags(head, context, data);
     }, 5);
   }
 }
