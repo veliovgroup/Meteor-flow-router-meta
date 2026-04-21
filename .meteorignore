@@ -1,9 +1,14 @@
 .github
 .gitignore
+index.test-d.ts
+package-lock.json
+package.json
+/tsd-stubs/
 .npm
 .DS_Store
 .eslintcache
 .eslintrc
+AGENTS.md
 CHANGELOG.md
 CODE_OF_CONDUCT.md
 CONTRIBUTING.md
