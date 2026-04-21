@@ -9,7 +9,7 @@ Change meta tags on the fly in [Meteor.js](https://docs.meteor.com/?utm_source=d
 
 ## Features:
 
-- 👷‍♂️ 100% tests coverage;
+- 👷‍♂️ Tinytest suite covers globals, routes, groups, not-found, and `application/ld+json`;
 - 🎛 Per route, per group, and default (*all routes*) `meta` tags;
 - 🎛 Per route, per group, and default (*all routes*) `script`s;
 - 🎛 Per route, per group, and default (*all routes*) `link`, like CSS files.
@@ -25,7 +25,7 @@ Various ways to set `meta`, `script` and `link` tags, *ordered by priority*:
 
 - [Installation](#install)
 - [Demos](#demos)
-- [ES6 Import](#es6-import)
+- [ES6 / TypeScript import](#es6--typescript-import)
 - [Related Packages](#related-packages)
 - [API](#api)
 - [Usage](#usage)
@@ -44,6 +44,12 @@ Various ways to set `meta`, `script` and `link` tags, *ordered by priority*:
 meteor add ostrio:flow-router-meta
 ```
 
+### Compatibility
+
+- Meteor `>=1.4`, including latest Meteor `3.4`;
+- Requires `ostrio:flow-router-extra@3.14.0+`;
+- Bundles with `ostrio:flow-router-title@3.5.0+`.
+
 > [!NOTE]
 > This package implies [`ostrio:flow-router-title`](https://atmospherejs.com/ostrio/flow-router-title) package.
 
@@ -53,12 +59,50 @@ meteor add ostrio:flow-router-meta
 - [Demo source](https://github.com/veliovgroup/Meteor-flow-router-meta/tree/master/demo)
 - [Tests](https://github.com/veliovgroup/Meteor-flow-router-meta/tree/master/tests.js)
 
-## ES6 Import
+## ES6 / TypeScript import
 
 ```js
 import { FlowRouterMeta } from 'meteor/ostrio:flow-router-meta';
-// This library implies ostrio:flow-router-title package, and both can be imported in single line:
+// This package implies `ostrio:flow-router-title`; both can be imported in one line:
 import { FlowRouterMeta, FlowRouterTitle } from 'meteor/ostrio:flow-router-meta';
+```
+
+TypeScript (with app dependency on `ostrio:flow-router-extra` so `Router` types resolve):
+
+```ts
+import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
+import { FlowRouterMeta, FlowRouterTitle } from 'meteor/ostrio:flow-router-meta';
+
+FlowRouter.route('/', {
+  name: 'home',
+  title: 'Home',
+  meta: { description: 'Welcome' },
+  action() {},
+});
+
+new FlowRouterMeta(FlowRouter);
+new FlowRouterTitle(FlowRouter);
+```
+
+Published typings ship as package assets (`index.d.ts`); with [`zodern:types`](https://github.com/zodern/meteor-types) in the app, `meteor/ostrio:flow-router-meta` imports are fully typed. `FlowRouterMeta` is **client-only** — construct it from client code (or a client entry) after routes are defined.
+
+### AGENTS.md
+
+The repo ships [`AGENTS.md`](https://github.com/veliovgroup/Meteor-flow-router-meta/blob/master/AGENTS.md): a compact **implementation map** for `ostrio:flow-router-title`. It complements API in this document.
+
+### SKILLS.md
+
+- The main `ostrio:flow-router-extra` package ships a bundled skill at **`.agents/skills/meteor-flow-router/SKILL.md`** (covers **`ostrio:flow-router-extra`**, **`ostrio:flow-router-meta`**, **`ostrio:flow-router-title`**). Install into your project with the [Skills CLI](https://www.npmjs.com/package/skills) (`npx skills`):
+
+```bash
+# From a Meteor app repo (install into that app’s .agents/skills for Cursor, etc.)
+npx skills add veliovgroup/flow-router --skill meteor-flow-router
+
+# Only list skills discovered in the Flow Router repo (no install)
+npx skills add veliovgroup/flow-router --list
+
+# User-global Cursor skills dir (~/.cursor/skills)
+npx skills add veliovgroup/flow-router --skill meteor-flow-router --agent cursor --global --yes
 ```
 
 ## Related Packages
@@ -70,9 +114,9 @@ import { FlowRouterMeta, FlowRouterTitle } from 'meteor/ostrio:flow-router-meta'
 
 ## API
 
-- `new FlowRouterMeta(FlowRouter)` — The main `FlowRouterMeta` constructor that accepts `FlowRouter` as the only argument
+- `new FlowRouterMeta(FlowRouter)` — Registers a `triggers.enter` handler on the router instance; pass the same `FlowRouter` object you use for routes.
 
-After `new FlowRouterMeta(FlowRouter)` instance is initiated it extends `FlowRouter.router()` and `FlowRouter.group()` methods and `FlowRouter.globals` with support of:
+Together with [`ostrio:flow-router-extra`](https://github.com/veliovgroup/flow-router), you may set the following on **`FlowRouter.route()`**, **`FlowRouter.group()`**, and **`FlowRouter.globals`** (merged in that order — route wins over group over globals):
 
 - `meta: Object` — Object with meta-tags
 - `meta: function(params, qs, data) => object` — Method returning object with meta-tags
@@ -129,7 +173,7 @@ FlowRouter.route('/routePath', {
   }
 });
 // Will generate
-// <meta name="og:title" content="Page-title">
+// <meta name="og:title" content="Page title">
 ```
 
 Set only `rel` and `href` attributes on `link` tag:
@@ -367,7 +411,6 @@ Push default `meta`, `link`, or `script` tags to `FlowRouter.globals`
 import { FlowRouter } from 'meteor/ostrio:flow-router-extra';
 
 FlowRouter.globals.push({
-  name: 'routeName',
   meta: {
     // <meta charset="UTF-8">
     charset: {
