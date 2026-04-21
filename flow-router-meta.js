@@ -124,8 +124,9 @@ export class FlowRouterMeta {
 
       const notFoundRoute = (self.router.notFound || self.router.notfound || null);
       for (let k = self.tags.length - 1; k >= 0; k--) {
-        if (notFoundRoute[self.tags[k]]) {
-          _context.route.options[self.tags[k]] = notFoundRoute[self.tags[k]];
+        const notFoundTagValue = notFoundRoute?.options?.[self.tags[k]] ?? notFoundRoute?.[self.tags[k]];
+        if (notFoundTagValue) {
+          _context.route.options[self.tags[k]] = notFoundTagValue;
         }
       }
 
@@ -138,7 +139,10 @@ export class FlowRouterMeta {
           self.metaHandler.call(self, _context);
         }, 5);
       }
-      return _orig.apply(this, arguments);
+      if (helpers.isFunction(_orig)) {
+        return _orig.apply(this, arguments);
+      }
+      return void 0;
     };
   }
 
