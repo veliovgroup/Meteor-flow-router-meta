@@ -99,6 +99,15 @@ new FlowRouterMeta(FlowRouter);
 new FlowRouterTitle(FlowRouter);
 ```
 
+### 404 / notFound compatibility
+
+`ostrio:flow-router-meta` works with both `ostrio:flow-router-extra` 404 definitions:
+
+- Recommended: catch-all route via `FlowRouter.route('*', { title, meta, link, script, action })`
+- Legacy/deprecated API: `FlowRouter.notFound = { title, meta, link, script, action }`
+
+Route options from `notFound` are supported, including dynamic values/functions.
+
 ### Basic examples
 
 Set only `name` and `content` attributes on `meta` tag:
