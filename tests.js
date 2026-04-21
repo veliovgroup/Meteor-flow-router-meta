@@ -309,6 +309,51 @@ Tinytest.addAsync('404 via FlowRouter.notFound', function (test, next) {
   }, 100);
 });
 
+Tinytest.addAsync('404 via FlowRouter.notFound setter options', function (test, next) {
+  FlowRouter.notFound = {
+    action() {},
+    title: '404: Set via notFound setter',
+    meta: {
+      robots: 'noindex, nofollow setter',
+      description: 'Set via notFound setter'
+    },
+    link: {
+      canonical: {
+        rel: 'canonical',
+        href: '/setter-route'
+      }
+    }
+  };
+
+  FlowRouter.go('/not/exists/for/sure/setter');
+  setTimeout(() => {
+    test.equal(document.title, '404: Set via notFound setter');
+    test.equal($('meta[data-name="robots"]').attr('content'), 'noindex, nofollow setter');
+    test.equal($('meta[data-name="description"]').attr('content'), 'Set via notFound setter');
+    test.equal($('link[data-name="canonical"]').attr('href'), '/setter-route');
+
+    FlowRouter.route('*', {
+      action() {},
+      title: '404: Page not found',
+      meta: {
+        robots: 'noindex, nofollow',
+        description: 'Non-existent route'
+      },
+      link: {
+        favicon: {
+          href: '/404.png',
+          rel: 'shortcut icon'
+        },
+        twbs: null,
+        canonical() {
+          return Meteor.absoluteUrl((FlowRouter.current().path || document.location.pathname).replace(/^\//g, ''));
+        }
+      }
+    });
+    next();
+  }, 100);
+});
+
 Tinytest.addAsync('Group - level 1', function (test, next) {
   FlowRouter.go('groupPage1');
   setTimeout(() => {
