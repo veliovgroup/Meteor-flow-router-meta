@@ -1,6 +1,6 @@
 Package.describe({
   name: 'ostrio:flow-router-meta',
-  version: '2.4.0',
+  version: '2.4.1',
   summary: 'Set and update meta, link, and script tags via flow-router hooks',
   git: 'https://github.com/veliovgroup/Meteor-flow-router-meta',
   documentation: 'README.md'
