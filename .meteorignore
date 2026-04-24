@@ -2,6 +2,7 @@
 .eslintcache
 .eslintrc
 .github
+.cursorignore
 .gitignore
 .npm
 node_modules/
@@ -17,5 +18,5 @@ LICENCE
 LICENSE
 package-lock.json
 package.json
-README.md
 tests.js
+tsconfig.json
